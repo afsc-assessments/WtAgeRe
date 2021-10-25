@@ -45,7 +45,7 @@ DATA_SECTION
    log_input(sd_obs);
    max_nyrs_data = max(nyrs_data);
   // Need to reset data-range for the years covered (for retrospective fitting)
-  retro = endyr-cur_yr-1;
+  retro = endyr-cur_yr-2;
   // NOTE This may not reduce sparse year data appropriately (assumed to be annual)
   for (int i=1;i<=ndat;i++) 
     nyrs_data(i) -= retro;

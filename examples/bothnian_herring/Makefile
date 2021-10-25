@@ -1,11 +1,7 @@
 EXEC = wt
 ARGS = -nox -iprint 50 
 
-ifeq ($(SAFE),FALSE)
-	DIST = ../../src/build/release/
-else
-	DIST = ../../src/build/debug/
-endif
+	DIST = ../../src/
 
 ifdef ComSpec
     RM=del /F /Q

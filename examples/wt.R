@@ -4,13 +4,6 @@ library(data.table)
 library(here)
 source(here("R/readadmb.R"))
 source(here("R/helper.R"))
-# Need to get the sampler wt-age read in here
-getwd()
-
-i=2015
-mod = 0
-# RE (random effects) results
-reres <- list(list())
 # First 15 w/o survey
 # Second 15 w/ survey
 #system(paste0("cp arc/wt2_no_srv.dat wt_",mod_opt,".dat") )
@@ -18,6 +11,8 @@ reres <- list(list())
 # system(paste0("cp arc/wt2_with_srv.pin wt_",mod_opt,".pin") )
 #--------------------------------------------------------------------------------------
 # get data (fishery)     
+dfgoa<-read_dat(here("examples","goapollock","wtgoa.dat"))
+
 df<-read_dat(here("examples","ebspollock","wt.dat"))
 df_fsh <- data.frame(year=df$fshry_yrs,df$fishery)
 df_srv <- data.frame(year=df$survey_yrs,df$survey)

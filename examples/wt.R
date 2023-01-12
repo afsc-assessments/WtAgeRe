@@ -1,8 +1,9 @@
 # wt.R
 library(tidyverse)
 library(data.table)
-source("../../R/readadmb.R")
-source("../../R/helper.R")
+library(here)
+source(here("R/readadmb.R"))
+source(here("R/helper.R"))
 # Need to get the sampler wt-age read in here
 getwd()
 
@@ -15,10 +16,34 @@ reres <- list(list())
 #system(paste0("cp arc/wt2_no_srv.dat wt_",mod_opt,".dat") )
 #system(paste0("cp arc/wt2_no_srv.pin wt_",mod_opt,".pin") )
 # system(paste0("cp arc/wt2_with_srv.pin wt_",mod_opt,".pin") )
-  df <- read_dat(paste0("wt.dat"))
-  df
-names(df)
-do_est = FALSE
+#--------------------------------------------------------------------------------------
+# get data (fishery)     
+df<-read_dat(here("examples","ebspollock","wt.dat"))
+df_fsh <- data.frame(year=df$fshry_yrs,df$fishery)
+df_srv <- data.frame(year=df$survey_yrs,df$survey)
+df_bth <- rbind(data.frame(df_fsh,source="fishery"),data.frame(df_srv,source="survey"))
+dd     <- read_rep("wt.rep") 
+dd
+df_tmp <- data.frame(year=dd$yr,dd$wt_pre,source="predicted") 
+df_bth
+names(df_tmp) <- c("year",3:15,"source")
+names(df_bth) <- c("year",3:15,"source")
+df_all <-rbind(df_bth,df_tmp) %>% mutate(source=fct_relevel(source, "fishery","survey","predicted"))
+maxage=10 # For display only...
+p1<-pivot_longer(df_all,cols = 2:14, names_to = "age", values_to = "wt") %>% group_by(age,source) %>% 
+   mutate(age=as.numeric(age), mnwt=mean(wt)) %>% ungroup() %>% filter(age<=maxage) %>% mutate(anom=wt/mnwt-1,Anomaly=ifelse(abs(anom)>.5,NA,anom) ) %>%
+   ggplot(aes(y=year,x=age,fill=Anomaly,label=round(wt,2))) + geom_tile() + 
+   scale_fill_gradient2(low = scales::muted("blue"), high = scales::muted("red"), na.value = "white") +
+   geom_text(size=3) + ylab("Year") + xlab("Age") + 
+   scale_y_reverse() + theme_minimal(base_size=18) + facet_grid(.~source) ; p1
+  ggsave("~/_mymods/ebswp/doc/figs/fsh_wtage_data_pred.pdf",plot=p1,width=12,height=15.0,units="in")
+#--------------------------------------------------------------------------------------
+
+  re_dat <- read_dat(here("examples", "ebspollock","wt.dat"))
+names(re_dat)
+re_dat
+do_est = TRUE
+ij=3
 for (ij in 1:3)
 {
   mod_opt <- ifelse(ij==1,"nosrv",
@@ -39,7 +64,7 @@ for (ij in 1:3)
   print(mod); print(mod_opt)
  df
  mod_opt="both"
- i=2020
+ i=2021
  do_est=TRUE
   for (i in 2019:2010){
     df$cur_yr <- i
@@ -57,20 +82,13 @@ for (ij in 1:3)
   }
 }
 # 1st 15 is w/o survey, second w/ and both, 3rd is w/ and yreff, 4th is w/ and coheff
+system(paste0("./wt  "))
 getwd()
 length(reres)
-df<-read_dat("wt.dat")
+df<-read_dat(here("examples","ebspollock","wt.dat"))
 names(df)
-
-# get data (fishery)     
-df_fsh <- data.frame(year=df$yrs_fishery,df$fishery)
-df_fsh <- data.frame(year=df$fshry_yrs,df$fishery)
-df_srv <- data.frame(year=df$survey_yrs,df$survey)
-names(df_fsh) <- c("year",3:15)
-df_fsh
-names(df_srv) <- c("year",3:15)
-df_bth <- rbind(data.frame(df_fsh,source="fishery"),data.frame(df_srv,source="survey"))
-names(df_bth) <- c("year",3:15,"source")
+df
+df[8]
 
 
 # Anomalies on the data
@@ -90,15 +108,26 @@ pivot_longer(df_fsh,-c(year), names_to = "age", values_to = "wt") %>% group_by(a
    scale_fill_gradient2(low = scales::muted("blue"), high = scales::muted("red"), na.value = "white") +
    geom_text(size=2.3) + ylab("Year") + xlab("Age") +
    ylim(c(2020,1960))+  theme_minimal(base_size=18) + ggtitle("Saithe data")
+function(file=c("wt"),dat=df,source=c("model")){
+    df_tmp <- data.frame()
+    #for (i in 1:length(file)){
 
 #--------------------------
 # Read in results/estimates
 #--------------------------
-  df_pred <- fn_get_pred(file=c("wt"),source=c("Pollock"))
-  df_pred <- fn_get_pred(file=c("wt"),source=c("Saithe"))
+  fn_get_pred
+  cd <- getwd()
+  setwd("examples/ebspollock/")
+  df_pred <- fn_get_pred(file=c("examples/ebspollock/wt"),source=c("Pollock"))
+  df_pred <- fn_get_pred(file=c("examples/ebspollock/wt"),dat=df_bth,source=c("Pollock"))
+  tmp <- read_rep("examples/ebspollock/wt.rep")
+  df_pred <- data.frame(year=tmp$yr,wt=tmp$wt_pre,source="new")
+  names(df_pred) <- c("year",3:15,"source")
   fn_plot_anoms(df_pred)
+  fn_plot_anoms
   df_pred
-pivot_longer(df_pred,-c(year,source), names_to = "age", values_to = "wt") %>% group_by(age) %>% 
+
+pivot_longer(df,-c(year,source), names_to = "age", values_to = "wt") %>% group_by(age) %>% 
    mutate(age=as.numeric(age), mnwt=mean(wt)) %>% ungroup() %>% filter(age<=maxage) %>% mutate(anom=wt/mnwt-1,Anomaly=ifelse(abs(anom)>.5,NA,anom) ) %>%
    ggplot(aes(y=year,x=age,fill=Anomaly,label=round(wt,2))) + geom_tile() + 
    scale_fill_gradient2(low = scales::muted("blue"), high = scales::muted("red"), na.value = "white") +

@@ -32,7 +32,7 @@ DATA_SECTION
   vector ages(age_st,age_end);
   // Kludge because ragged not working correctly...
   int max_nyrs_data;
- LOCAL_CALCS
+ LOC_CALCS
    log_input(cur_yr);
    log_input(styr);
    log_input(endyr);
@@ -124,13 +124,14 @@ PROCEDURE_SECTION
       wt_pre(i)(age_st+1,age_end) = ++(wt_pre(i-1)(age_st,age_end-1) + wt_inc*mfexp(sigma_yr*yr_eff(i)));
   }
   int iyr;
+
   // Fit global mean to all years...
-  for (int h = 1;h<=ndat;h++)
+  for (int h = 1;h<=ndat;h++) // Loop over number of data sets (assuming 1st is target)
   {
-    for (int i=1;i<=nyrs_data(h);i++)
+    for (int i=1;i<=nyrs_data(h);i++) // Loop over how many observations w/in a data set
     {
       iyr = yrs_data(h,i);
-    	if (h>1) 
+    	if (h>1) // First data set is correct scale, latter sets need a multiplier (d_scale)
     		wt_hat(h,i) = elem_prod(d_scale(h-1) , wt_pre(iyr) );
     	else
         wt_hat(h,i) = wt_pre(iyr);

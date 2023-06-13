@@ -6,9 +6,11 @@ fn_get_pred <- function(file=c("wt"),dat=df,source=c("model")){
       dd     <- read_rep(paste0(file[i],".rep"))
       df_tmp <- rbind(df_tmp, data.frame(year=dd$yr,dd$wt_pre,source=source[i]))
     }
-    names(df_tmp) <- c("year",dat[7]:dat[8],"source")
+    names(df_tmp) <- c("year",unlist(dat[8]):unlist(dat[9]),"source")
     return(df_tmp)
   }
+
+
 fn_plot_anoms <- function(df, maxage=10,firstyr=1982,minage=3){
   pivot_longer(df,cols = 2:52, names_to = "age", values_to = "wt") %>% group_by(age,source) %>% 
    mutate(age=as.numeric(age), mnwt=mean(wt)) %>% ungroup() %>% filter(year>=firstyr,age>=minage,age<=maxage) %>% mutate(anom=wt/mnwt-1,Anomaly=ifelse(abs(anom)>.5,NA,anom) ) %>%
@@ -17,4 +19,3 @@ fn_plot_anoms <- function(df, maxage=10,firstyr=1982,minage=3){
    geom_text(size=3) + ylab("Year") + xlab("Age") + 
    scale_y_reverse() + theme_minimal(base_size=18) + facet_grid(.~source)
  }
-

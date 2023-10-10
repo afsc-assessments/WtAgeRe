@@ -8,11 +8,42 @@ source("../../R/helper.R")
 getwd()
 
 df<-read_dat("wt.dat")
-names(df)
+df_sc<-read_dat("sc.dat")
+df_fn<-read_dat("fn.dat")
+
+fn="sc.dat";fitmod=TRUE;source="South central"
+do_fit <- function(fn="sc.dat",fitmod=TRUE,source="South central"){
+  df <-read_dat(fn)
+  df_tmp <- data.frame(year=df$fshry_yrs,df$fishery)
+  names(df_tmp) <- c("year",1:12)
+  df_tmp$source <- paste(source,"data")
+  if (fitmod)
+    system(paste("wt -ind",fn))
+  df_res <- fn_get_pred(file='wt',source=source)
+  return(rbind(df_tmp,df_res))
+}
+df_fn<-do_fit(fn="fn.dat",source="Far north")
+df_nc<-do_fit(fn="nc.dat",source="Northern Chile")
+df_sc<-do_fit()
+df_os<-do_fit(fn="offshore.dat",source="Offshore")
+df_an<-do_fit(fn="acoustN.dat",source="Acoustic N Chile")
+df_as<-do_fit(fn="acoustS.dat",source="Acoustic SC Chile")
+fn_plot_anoms(df_fn,firstyr=1970,minage=3,txtsize=2.2) 
+fn_plot_anoms(df_nc,firstyr=1970,minage=3,txtsize=2.2) 
+fn_plot_anoms(df_sc,firstyr=1970,minage=3,txtsize=2.2) 
+fn_plot_anoms(df_as,firstyr=1970,minage=3,txtsize=2.2) 
+fn_plot_anoms(df_an,firstyr=1970,minage=3,txtsize=2.2) 
+fn_plot_anoms(df_fn)
+fn_plot_anoms(rbind(df_fn,df_nc,df_os))
+
+
+
+
 
 # get data (fishery)     
 df_fsh <- data.frame(year=df$fshry_yrs,df$fishery)
 names(df_fsh) <- c("year",1:12)
+
 # Anomalies on the data
 maxage=10 # For display only...
 pivot_longer(df_fsh,cols = 2:13, names_to = "age", values_to = "wt") %>% group_by(age) %>% 
@@ -30,19 +61,22 @@ pivot_longer(df_fsh,cols = 2:13, names_to = "age", values_to = "wt") %>% group_b
 # Read in results/estimates
 #--------------------------
    # show some examples
-  df_res <- fn_get_pred(file='wt',source="Jack mackerel")
+  df_res <- fn_get_pred(file='wt',source="Jack mackerel-South Central")
   pivot_longer(df_res, cols=2:13,names_to = "age", values_to = "wt") %>% group_by(age,source) %>% 
    mutate(age=as.numeric(age), mnwt=mean(wt)) %>% ungroup() %>% filter(year>=1975,age>=2,age<=maxage) %>% 
    mutate(anom=wt/mnwt-1,Anomaly=ifelse(abs(anom)>.5,NA,anom) ) %>%
    ggplot(aes(y=year,x=age,fill=Anomaly,label=round(wt,2))) + geom_tile() + 
      scale_fill_gradient2(low = scales::muted("blue"), high = scales::muted("red"), na.value = "white") +
      geom_text(size=3) + ylab("Year") + xlab("Age") + 
-     scale_y_reverse() + theme_minimal(base_size=18) + ggtitle("Jack mackerel model")
+     scale_y_reverse() + theme_minimal(base_size=18) + ggtitle("Jack mackerel model, S-Central")
      if (length(unique(dfin$source))>1) p1 <- p1 + facet_grid(.~source)
- }
+ 
  head(df_res)
 fn_plot_anoms(df_res)
+fn_plot_anoms
 dfin <- df_res
+  df_rep <- read_rep(paste0("wt.rep"))
+  df_pred<- data.frame(year=df_rep$yr,df_rep$wt_pre)
 names(dfin)[3:dim(dfin)[2]-1] 
 names(dfin)[2]
   names(df)
@@ -64,8 +98,6 @@ pivot_longer(wt_res,cols = 1:13, names_to = "age", values_to = "CV") %>%
    geom_text(size=3) + ylab("Year") + xlab("Age") + ggtitle("Weight-at-age CV") +
    scale_y_reverse() + theme_minimal(base_size=16) #+ facet_grid(.~source)
 
-  df_rep <- read_rep(paste0("wt.rep"))
-  df_pred<- data.frame(year=df_rep$yr,df_rep$wt_pre)
   names(df_pred) <- c("year",3:15)
 
   df_nosrv<-read_rep("wt_nosrv.rep")

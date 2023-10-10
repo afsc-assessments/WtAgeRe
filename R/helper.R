@@ -10,13 +10,13 @@ fn_get_pred <- function(file=c("wt"),dat=df,source=c("model")){
     return(df_tmp)
   }
   
-fn_plot_anoms <- function(dfin, maxage=10,firstyr=1982,minage=3){
+fn_plot_anoms <- function(dfin, maxage=10,firstyr=1982,minage=3,txtsize=3){
   p1<-pivot_longer(dfin,cols=2:11, names_to = "age", values_to = "wt") %>% group_by(age,source) %>% 
   mutate(age=as.numeric(age), mnwt=mean(wt)) %>% ungroup() %>% filter(year>=firstyr,age>=minage,age<=maxage) %>% 
    mutate(anom=wt/mnwt-1,Anomaly=ifelse(abs(anom)>.5,NA,anom) ) %>%
    ggplot(aes(y=year,x=age,fill=Anomaly,label=round(wt,2))) + geom_tile() + 
      scale_fill_gradient2(low = scales::muted("blue"), high = scales::muted("red"), na.value = "white") +
-     geom_text(size=3) + ylab("Year") + xlab("Age") + 
+     geom_text(size=txtsize) + ylab("Year") + xlab("Age") + 
      scale_y_reverse() + theme_minimal(base_size=18) 
      if (length(unique(dfin$source))>1) p1 <- p1 + facet_grid(.~source)
       return(p1)
@@ -26,3 +26,18 @@ fn_plot_anoms <- function(dfin, maxage=10,firstyr=1982,minage=3){
 #dfin <- df_res
 #names(dfin)[3:dim(dfin)[2]-1] 
 #names(dfin)[2]
+#----------------------------------------------------------------
+# Define some helper fill functions
+# For sd wt-age
+replace_zeros_with_two <- function(column) {
+  mean_without_zeros <- mean(column[column != 0], na.rm = TRUE)
+  column[column== 0] <- 1.9999
+  return(column)
+}
+# For mean wt-age
+replace_zeros_with_mean <- function(column) {
+  mean_without_zeros <- mean(column[column != 0], na.rm = TRUE)
+  column[column>=1.8*mean_without_zeros|column <= 0.5*mean_without_zeros] <- mean_without_zeros
+  return(column)
+}
+#----------------------------------------------------------------

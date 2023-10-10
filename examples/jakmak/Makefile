@@ -2,9 +2,9 @@ EXEC = wt
 ARGS = -nox -iprint 50 
 
 ifeq ($(SAFE),FALSE)
-	DIST = ../../src/build/release/
+	DIST = ../../src/
 else
-	DIST = ../../src/build/debug/
+	DIST = ../../src/
 endif
 
 ifdef ComSpec

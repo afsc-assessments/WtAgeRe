@@ -1,39 +1,204 @@
 # wt.R
+#radian
 library(tidyverse)
 library(data.table)
 library(here)
-source(here("R/readadmb.R"))
+source(here("R","readadmb.R"))
 source(here("R/helper.R"))
 # First 15 w/o survey
 # Second 15 w/ survey
 #system(paste0("cp arc/wt2_no_srv.dat wt_",mod_opt,".dat") )
 #system(paste0("cp arc/wt2_no_srv.pin wt_",mod_opt,".pin") )
 # system(paste0("cp arc/wt2_with_srv.pin wt_",mod_opt,".pin") )
-#--------------------------------------------------------------------------------------
-# get data (fishery)     
-dfgoa<-read_dat(here("examples","goapollock","wtgoa.dat"))
+#Start with a recent data file---------------------------------------------------------
+#--Get data (fishery)--------------  
+#--Increment last years by one year--------
+ #dfgoa<-read_dat(here("examples","goapollock","wtgoa.dat"))
+ #df<-read_dat(here("examples","ebspollock","wt.dat"))
+df<-read_dat(here("examples","ebspollock","wt22.dat"))
+#--Increment last years by one year--------
+names(df)
+df$cur_yr <- df$cur_yr +1
+df$endyr <-  df$endyr +1 
+df$N_yrs_data_sets 
+df$N_yrs_data_sets <-  df$N_yrs_data_sets +1
+df$N_yrs_data_sets 
+df$fishery 
+df$fishery_std
+df$survey
+df$survey_std
+# Apply the function to each column in the dataframe
+# Fetch latest fishery wt-at-age
+wtdf   <- read_csv("~/_mymods/sampler/cases/ebswpSAM/wdt.csv")
+sdwtdf <- read_csv("~/_mymods/sampler/cases/ebswpSAM/sdwdt.csv")
+fsh_avg<-as.data.frame(sapply(  wtdf[,4:16], replace_zeros_with_mean))
+fsh_std<-as.data.frame(sapply(sdwtdf[,4:16], replace_zeros_with_two))
+fsh_std
+dim(fsh_avg)
+dim(fsh_std)
+df$fshry_yrs   <- wtdf$yr
+df$fishery     <- fsh_avg
+df$fishery_std <- fsh_std
 
-df<-read_dat(here("examples","ebspollock","wt.dat"))
-df_fsh <- data.frame(year=df$fshry_yrs,df$fishery)
-df_srv <- data.frame(year=df$survey_yrs,df$survey)
-df_bth <- rbind(data.frame(df_fsh,source="fishery"),data.frame(df_srv,source="survey"))
-dd     <- read_rep("wt.rep") 
-dd
-df_tmp <- data.frame(year=dd$yr,dd$wt_pre,source="predicted") 
-df_bth
+# Read in specimen data 
+spdf<- read_csv(here("~/_mymods/ebs_main/data/bts/2023_BTS_DDC/raw_data/raw_data_pollock_specimen_2023-09-29.csv"))
+#mnwt <- spdf |> filter(age>0) |> mutate(age=ifelse(age>15,15,age)) |>  group_by(year,age) |> summarise(std=sd(weight,na.rm=TRUE), mean=mean(weight,na.rm=TRUE),cv=std/mean) |> print(n=Inf)
+mnwt <- spdf |> filter(year==2023,age>0) |> mutate(age=ifelse(age>15,15,age)) |> 
+  group_by(age) |> summarise(std=sd(weight,na.rm=TRUE), mean=mean(weight,na.rm=TRUE),cv=std/mean) |> print(n=Inf)
+glimpse(mnwt)
+#mnwt |> select(year, age, mean) |> filter(age>2,year==2023) |> transmute(age,mnwt=mean/1000) |> pivot_wider(names_from=age, values_from=mnwt) |> print(n=Inf)
+mnwtnew <- mnwt |> filter(age>2)|> select(age, mean) |> 
+  transmute(age,mnwt=mean/1000) |>  pivot_wider(names_from=age, values_from=mnwt) 
+sdwtnew <- mnwt |> select(age, std) |> filter(age>2) |> 
+  transmute(age,sdwt=std/1000) |>  pivot_wider(names_from=age, values_from=sdwt) 
+#Now add new row to survey section
+df$survey_yrs <- c(df$survey_yrs,df$cur_yr)
+#as.matrix(mnwtnew) is.list(as.matrix(rbind(df$survey[],as.matrix(mnwtnew[]))))
+df$survey     <- rbind(as.matrix(df$survey),as.matrix(mnwtnew))
+df$survey_std <- rbind(as.matrix(df$survey_std),as.matrix(sdwtnew))
+#names(df$survey) <- 3:15
+#is.list(df$survey)  is.matrix(df$survey)  is.matrix(df$fishery)  (df$survey) 
+#names(df)
+df$fishery <- as.matrix(df$fishery) 
+df$survey <- as.matrix((df$survey[]))
+(df$survey) 
+is.matrix(df$survey) 
+is.list(df$survey) 
+#glimpse(df$survey) is.list(df$fishery)
+df$fishery_std <- as.matrix((df$fishery_std))
+df$survey_std <- as.matrix((df$survey_std))
+names(df)
+write_dat(df,"examples/ebspollock/wt23.dat")
+system("cd examples/ebspollock; wt -ind wt23.dat; cp wt.rep wt23.rep ; cd ../..")
+
+# Now get params and write data file used in the assessment
+mfit <- read_fit(here("examples","ebspollock","wt"))
+names(mfit)
+ltmp <- list()
+ltmp$log_sd_coh <- (mfit$est[mfit$names=="log_sd_coh"])
+ltmp$log_sd_yr <- (mfit$est[mfit$names=="log_sd_yr"])
+ltmp
+
+#Now write to dat file that is in the github update ebs  
+write_dat(c(ltmp,df),"~/_mymods/ebswp/2023_runs/dat/wtage2023.dat")
+
+#Plot fish wt-age--------
+df<-read_dat(here("examples","ebspollock","wt23.dat"))
+# Results
+dd<-read_rep(here("examples","ebspollock","wt23.rep"))
+df$fshry_yrs
+df_fsh <- data.frame(year=df$fshry_yrs,df$fishery,source="Fishery")
+df_srv <- data.frame(year=df$survey_yrs,df$survey,source="Survey")
+names(df_fsh) <- c("year",3:15,"source");names(df_fsh)
+names(df_srv) <- c("year",3:15,"source");names(df_srv)
+df_bth <- rbind(df_fsh,df_srv)
+df_tmp <- data.frame(year=dd$yr,dd$wt_pre,source="Predicted") 
 names(df_tmp) <- c("year",3:15,"source")
-names(df_bth) <- c("year",3:15,"source")
-df_all <-rbind(df_bth,df_tmp) %>% mutate(source=fct_relevel(source, "fishery","survey","predicted"))
+df_all <-rbind(df_bth,df_tmp) |>   mutate(source=fct_relevel(source, "Fishery","Survey","Predicted"))
 maxage=10 # For display only...
+
 p1<-pivot_longer(df_all,cols = 2:14, names_to = "age", values_to = "wt") %>% group_by(age,source) %>% 
-   mutate(age=as.numeric(age), mnwt=mean(wt)) %>% ungroup() %>% filter(age<=maxage) %>% mutate(anom=wt/mnwt-1,Anomaly=ifelse(abs(anom)>.5,NA,anom) ) %>%
+  mutate(age=as.numeric(age), mnwt=mean(wt)) %>% ungroup() %>% filter(age<=maxage) %>% 
+  mutate(anom=wt/mnwt-1,Anomaly=ifelse(abs(anom)>.5,NA,anom) ) %>%
+  ggplot(aes(y=year,x=age,fill=Anomaly,label=round(wt,2))) + geom_tile() + 
+  scale_fill_gradient2(low = scales::muted("blue"), high = scales::muted("red"), na.value = "white") +
+  geom_text(size=3.1) + ylab("Year") + xlab("Age") + ggtitle("Fishery body-weight-at-age")+
+  scale_y_reverse() + theme_minimal(base_size=18) + facet_grid(.~source) ; p1
+ggsave("~/_mymods/ebswp/doc/figs/fsh_wtage_data_pred.pdf",plot=p1,width=12,height=15.0,units="in")
+
+#now put into the datafile...I@
+
+
+# SSB set-----
+#Read in last year's estimates
+df<-read_dat(here("examples","ebspollock","ssb22.dat"))
+str_wtage2022
+
+wtdf<-read_table("~/_mymods/sampler/cases/ebswpSAM/results/str_wtage2022.rep",col_names = FALSE)
+names(wtdf) <- c("sim","j","yr","str",1:15)
+glimpse(wtdf)
+mnwt_tmp <- wtdf |>  filter(str==1) |> pivot_longer(cols=5:19,names_to="age",values_to="wt") |> 
+  transmute(age=as.numeric(age),wt) |> group_by(age) |> summarise(mnwt=mean(wt), sdwt=sd(wt)) |> 
+  pivot_wider(-sdwt,names_from=age,values_from=c(mnwt))
+
+sdwt_tmp <- wtdf |>  filter(str==1) |> pivot_longer(cols=5:19,names_to="age",values_to="wt") |> 
+  transmute(age=as.numeric(age),wt) |> group_by(age) |> summarise(mnwt=mean(wt), sdwt=sd(wt)) |> 
+  pivot_wider(-mnwt,names_from=age,values_from=c(sdwt))
+
+df$fishery
+df$fishery     <- rbind(as.matrix(df$fishery),as.matrix(mnwt_tmp[3:15]))
+df$fishery_std <- rbind(as.matrix(df$fishery_std),as.matrix(sdwt_tmp[3:15]))
+
+fsh_avg<-as.data.frame(sapply(  data.frame(df$fishery), replace_zeros_with_mean))
+fsh_std<-as.data.frame(sapply( data.frame(df$fishery_std), replace_zeros_with_two))
+fsh_avg
+fsh_std
+names(df)
+df$cur_yr
+df$cur_yr <- df$cur_yr +1
+df$endyr <-  df$endyr +1 
+df$N_yrs_data_sets 
+df$N_yrs_data_sets <-  df$N_yrs_data_sets +1
+df$N_yrs_data_sets 
+df$fshry_yrs   <- c(df$fshry_yrs,   df$fshry_yrs[length(df$fshry_yrs)]+1)
+df$fishery <- as.matrix(fsh_avg)
+df$fishery_std <- as.matrix(fsh_std)
+df$fishery
+
+df$survey_yrs <- c(df$survey_yrs,df$cur_yr)
+df$survey_yrs
+#as.matrix(mnwtnew) is.list(as.matrix(rbind(df$survey[],as.matrix(mnwtnew[]))))
+df$survey     <- rbind(as.matrix(df$survey),as.matrix(mnwtnew))
+df$survey_std <- rbind(as.matrix(df$survey_std),as.matrix(sdwtnew))
+#names(df$survey) <- 3:15
+df$survey
+df$survey_std
+
+write_dat(df,"examples/ebspollock/ssb23.dat")
+system("cd examples/ebspollock; wt -ind ssb23.dat;cp wt.rep ssb23.rep; cd ../..")
+# Now get params and write data file used in the assessment
+mfit <- read_fit(here("examples","ebspollock","wt"))
+names(mfit)
+ltmp <- list()
+ltmp$log_sd_coh <- (mfit$est[mfit$names=="log_sd_coh"])
+ltmp$log_sd_yr <- (mfit$est[mfit$names=="log_sd_yr"])
+ltmp
+
+#--Plotting post SSB ---------------
+df<-read_dat(here("examples","ebspollock","ssb23.dat"))
+# Results
+dd<-read_rep(here("examples","ebspollock","ssb23.rep"))
+names(df)
+df_fsh <- data.frame(year=df$fshry_yrs,df$fishery,source="A-season")
+df_srv <- data.frame(year=df$survey_yrs,df$survey,source="Survey")
+df_bth <- rbind(df_fsh,df_srv)
+names(df_bth) <- c("year",3:15,"source")
+names(df_bth)
+df_tmp <- data.frame(year=dd$yr,dd$wt_pre,source="Predicted") 
+names(df_tmp) <- c("year",3:15,"source")
+names(df_bth)
+df_all <-rbind(df_bth,df_tmp) %>% mutate(source=fct_relevel(source, "A-season","Survey","Predicted"))
+maxage=10 # For display only...
+
+p1<-pivot_longer(df_all,cols = 2:14, names_to = "age", values_to = "wt") %>% group_by(age,source) %>% 
+   mutate(age=as.numeric(age), mnwt=mean(wt)) %>% ungroup() %>% filter(age<=maxage) %>% 
+   mutate(anom=wt/mnwt-1,Anomaly=ifelse(abs(anom)>.5,NA,anom) ) %>%
    ggplot(aes(y=year,x=age,fill=Anomaly,label=round(wt,2))) + geom_tile() + 
    scale_fill_gradient2(low = scales::muted("blue"), high = scales::muted("red"), na.value = "white") +
-   geom_text(size=3) + ylab("Year") + xlab("Age") + 
+   geom_text(size=2.1) + ylab("Year") + xlab("Age") + ggtitle("Spawning biomass body-weight-at-age")+
    scale_y_reverse() + theme_minimal(base_size=18) + facet_grid(.~source) ; p1
-  ggsave("~/_mymods/ebswp/doc/figs/fsh_wtage_data_pred.pdf",plot=p1,width=12,height=15.0,units="in")
-#--------------------------------------------------------------------------------------
+  ggsave("~/_mymods/ebswp/doc/figs/ssb_wtage_data_pred.pdf",plot=p1,width=12,height=15.0,units="in")
 
+
+#End of main------------------------------------------------------------------------------------------
+# Now write predictions for use in model
+  #XXXX
+  is.data.frame(df_tmp)
+write_csv(df_tmp,"~/_mymods/ebswp/2023_runs/dat/ssb23.csv")
+
+  df_tmp
+
+#Do other stuff?----------------------------------------------------------------------
   re_dat <- read_dat(here("examples", "ebspollock","wt.dat"))
 names(re_dat)
 re_dat
@@ -103,13 +268,12 @@ pivot_longer(df_fsh,-c(year), names_to = "age", values_to = "wt") %>% group_by(a
    scale_fill_gradient2(low = scales::muted("blue"), high = scales::muted("red"), na.value = "white") +
    geom_text(size=2.3) + ylab("Year") + xlab("Age") +
    ylim(c(2020,1960))+  theme_minimal(base_size=18) + ggtitle("Saithe data")
+
 function(file=c("wt"),dat=df,source=c("model")){
     df_tmp <- data.frame()
     #for (i in 1:length(file)){
 
-#--------------------------
-# Read in results/estimates
-#--------------------------
+#--Read in results/estimates--------------------------
   fn_get_pred
   cd <- getwd()
   setwd("examples/ebspollock/")
@@ -129,9 +293,7 @@ pivot_longer(df,-c(year,source), names_to = "age", values_to = "wt") %>% group_b
    geom_text(size=2.3) + ylab("Year") + xlab("Age") + 
    scale_y_reverse() + theme_minimal(base_size=18) + ggtitle("Saithe model")
 
-#--------------------------
-# Read in results/estimates
-#--------------------------
+#-Read in results/estimates-------------------------
   df_pred <- fn_get_pred(file=c("wt"),source=c("Pollock"))
   df_pred <- fn_get_pred(file=c("wt"),source=c("Saithe"))
   fn_plot_anoms(df_pred)

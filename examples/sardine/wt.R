@@ -8,7 +8,7 @@ source("../../R/helper.R")
 mex1<-read_dat("mex1.dat")
 mex2<-read_dat("mex2.dat")
 pnw<-read_dat("pnw.dat")
-df<-pnw
+glimpse(pnw)
 system("wt -ind pnw.dat")
 names(pnw)
 df_dat <- data.frame(year=df$pnw_yrs,wt=df$pnw,source="PNW")

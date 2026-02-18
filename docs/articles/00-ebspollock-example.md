@@ -1,24 +1,12 @@
----
-title: "WtAgeRe ebspollock example"
-vignette: >
-  %\VignetteIndexEntry{WtAgeRe ebspollock example}
-  %\VignetteEncoding{UTF-8}
-  %\VignetteEngine{knitr::rmarkdown}
-output: rmarkdown::html_vignette
----
+# WtAgeRe ebspollock example
 
-```{r, include = FALSE}
-knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
-knitr::opts_knit$set(root.dir = here::here())
-knitr::opts_chunk$set(warning = FALSE, message = FALSE, echo = TRUE)
-```
-
-# Example: EBS pollock
+## Example: EBS pollock
 
 This vignette shows how to run the weight-at-age model using the
 `examples/ebspollock` dataset and then visualize anomalies.
 
-```{r}
+``` r
+
 library(WtAgeRe)
 
 # Run ADMB model in the example directory (requires ADMB toolchain)

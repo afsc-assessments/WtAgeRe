@@ -1,0 +1,58 @@
+# Fish body mass at age estimation
+
+A random effects model for estimating variance in weight-at-age.
+
+## Package usage
+
+\`\`\`{r} \# install.packages(“devtools”) \#
+devtools::load_all(“WtAgeRe”)
+
+library(WtAgeRe)
+
+# Example: read predictions and plot anomalies
+
+setwd(“examples/ebspollock”) pred \<- fn_get_pred(file = “wt”, dat =
+NULL, source = “model”) fn_plot_anoms(pred) \`\`\`
+
+## ADMB model
+
+Examples are in `examples/`. Each example directory contains a
+`Makefile` and `wt.tpl` for the ADMB model. Run `make` inside the
+example directory to build and run the model.
+
+# Package index
+
+## All functions
+
+- [`colr()`](https://afsc-assessments.github.io/WtAgeRe/reference/colr.md)
+  : Transparent colors
+- [`fn_get_pred()`](https://afsc-assessments.github.io/WtAgeRe/reference/fn_get_pred.md)
+  : Get predicted weight-at-age
+- [`fn_plot_anoms()`](https://afsc-assessments.github.io/WtAgeRe/reference/fn_plot_anoms.md)
+  : Plot weight-at-age anomalies
+- [`read_admb()`](https://afsc-assessments.github.io/WtAgeRe/reference/read_admb.md)
+  : Read ADMB output files
+- [`read_ctl()`](https://afsc-assessments.github.io/WtAgeRe/reference/read_ctl.md)
+  : Read ADMB .ctl file
+- [`read_dat()`](https://afsc-assessments.github.io/WtAgeRe/reference/read_dat.md)
+  : Read ADMB data files
+- [`read_fit()`](https://afsc-assessments.github.io/WtAgeRe/reference/read_fit.md)
+  : Read ADMB .par, .std, and .cor file and return an R object of type
+  'list' of estimates and correlations
+- [`read_psv()`](https://afsc-assessments.github.io/WtAgeRe/reference/read_psv.md)
+  : Read ADMB .psv file
+- [`read_rep()`](https://afsc-assessments.github.io/WtAgeRe/reference/read_rep.md)
+  : Read ADMB .rep file
+- [`replace_zeros_with_mean()`](https://afsc-assessments.github.io/WtAgeRe/reference/replace_zeros_with_mean.md)
+  : Replace outliers with mean for mean weight-at-age
+- [`replace_zeros_with_two()`](https://afsc-assessments.github.io/WtAgeRe/reference/replace_zeros_with_two.md)
+  : Replace zeros with near-two for SD
+- [`write_dat()`](https://afsc-assessments.github.io/WtAgeRe/reference/write_dat.md)
+  : Write ADMB data file
+
+# Articles
+
+### All vignettes
+
+- [WtAgeRe ebspollock
+  example](https://afsc-assessments.github.io/WtAgeRe/articles/00-ebspollock-example.md):

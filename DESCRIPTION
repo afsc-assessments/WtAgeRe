@@ -6,6 +6,7 @@ Authors@R: person("Jim", "Ianelli", email = "Jim.Ianelli@noaa.gov", role = c("au
 Description: A random effects model for estimating variance in weight-at-age,
     with utilities to read ADMB outputs and plot weight-at-age anomalies.
 License: CC0-1.0
+URL: https://afsc-assessments.github.io/WtAgeRe/
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)

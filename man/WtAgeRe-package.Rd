@@ -8,6 +8,13 @@
 \description{
 Utilities for weight-at-age modeling and ADMB output processing.
 }
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://afsc-assessments.github.io/WtAgeRe/}
+}
+
+}
 \author{
 \strong{Maintainer}: Jim Ianelli \email{Jim.Ianelli@noaa.gov}
 

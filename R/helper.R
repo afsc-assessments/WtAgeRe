@@ -42,12 +42,12 @@ fn_plot_anoms <- function(dfin, maxage = 10, firstyr = 1982, minage = 3, txtsize
   p1 <- dplyr::mutate(
     tidyr::pivot_longer(dfin, cols = 2:(ncol(dfin) - 1), names_to = "age", values_to = "wt"),
     age = as.numeric(age)
-  ) %>%
-    dplyr::group_by(age, source) %>%
-    dplyr::mutate(mnwt = mean(wt, na.rm = TRUE)) %>%
-    dplyr::ungroup() %>%
-    dplyr::filter(year >= firstyr, age >= minage, age <= maxage) %>%
-    dplyr::mutate(anom = wt / mnwt - 1, Anomaly = ifelse(abs(anom) > 0.5, NA, anom)) %>%
+  ) |>
+    dplyr::group_by(age, source) |>
+    dplyr::mutate(mnwt = mean(wt, na.rm = TRUE)) |>
+    dplyr::ungroup() |>
+    dplyr::filter(year >= firstyr, age >= minage, age <= maxage) |>
+    dplyr::mutate(anom = wt / mnwt - 1, Anomaly = ifelse(abs(anom) > 0.5, NA, anom)) |>
     ggplot2::ggplot(ggplot2::aes(y = year, x = age, fill = Anomaly, label = round(wt, 2))) +
     ggplot2::geom_tile() +
     ggplot2::scale_fill_gradient2(low = scales::muted("blue"), high = scales::muted("red"), na.value = "white") +

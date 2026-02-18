@@ -6,7 +6,6 @@
 #' @param repfile ADMB output files to be read (no extension needed)
 #' @return object of type 'list' with ADMB outputs as list elements
 #' @export
-#' 
 read_admb <- function(repfile)
 {
     ret <- read_fit(repfile)
@@ -25,13 +24,18 @@ read_admb <- function(repfile)
 #' @param repfile ADMB output files to be read (no extension needed)
 #' @return object of type 'list' with ADMB outputs as list elements
 #' @export
-#' 
 read_dat <- function(datfile)
 {
     A <- read_rep(datfile)
     names(A) <- substr(names(A),2,111)
     return(A)
 }
+#' Write ADMB data file
+#'
+#' @param A List of ADMB objects.
+#' @param datfile Output data file path.
+#' @return Invisibly returns `NULL`.
+#' @export
 write_dat <- function(A,datfile)
 {
     cat("# Datafile created in R \n",file=datfile)
@@ -204,8 +208,13 @@ read_ctl <- function(fn)
 }
 
 
-# A simple function for creating transparent colors
-# Author: Nathan Stephens (hacks package)
+#' Transparent colors
+#'
+#' @param col.pal Color palette or vector of colors.
+#' @param a Numeric alpha in \code{[0, 1]}.
+#' @return Character vector of colors with alpha applied.
+#' @note Author: Nathan Stephens (hacks package)
+#' @export
 colr <- function(col.pal=1,a=1)
 {
     col.rgb<-col2rgb(col.pal)/255

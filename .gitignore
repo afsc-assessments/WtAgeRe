@@ -60,6 +60,8 @@ src/gmacs.exe
 src/gmacs.htp
 src/gmacs.obj
 src/moltIncrement.cpp
+src/wt.cpp
+src/wt.htp
 
 # ADMB standard output files
 *.b0*

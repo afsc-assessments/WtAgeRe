@@ -4,15 +4,18 @@ A random effects model for estimating variance in weight-at-age.
 
 ## Package usage
 
-\`\`\`{r} \# install.packages(“devtools”) \#
-devtools::load_all(“WtAgeRe”)
+``` r
+
+# install.packages("devtools")
+# devtools::load_all("WtAgeRe")
 
 library(WtAgeRe)
 
 # Example: read predictions and plot anomalies
-
-setwd(“examples/ebspollock”) pred \<- fn_get_pred(file = “wt”, dat =
-NULL, source = “model”) fn_plot_anoms(pred) \`\`\`
+setwd("examples/ebspollock")
+pred <- fn_get_pred(file = "wt", dat = NULL, source = "model")
+fn_plot_anoms(pred)
+```
 
 ## ADMB model
 

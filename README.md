@@ -3,7 +3,7 @@ A random effects model for estimating variance in weight-at-age.
 
 ## Package usage
 
-```{r}
+```r
 # install.packages("devtools")
 # devtools::load_all("WtAgeRe")
 

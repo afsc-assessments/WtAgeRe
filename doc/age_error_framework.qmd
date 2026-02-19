@@ -1,0 +1,273 @@
+---
+title: "Accounting for Age Uncertainty in Weights-at-Age Estimation"
+subtitle: "Mathematical Framework for the `wt.tpl` ADMB Model"
+author: "Preliminary Technical Document"
+date: today
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    number-sections: true
+    code-fold: true
+    theme: cosmo
+    embed-resources: true
+  pdf:
+    toc: true
+    number-sections: true
+    geometry: margin=1in
+#bibliography: references.bib
+---
+
+## Overview
+
+The `wt.tpl` ADMB program estimates mean weights-at-age using a mixed-effects growth model with cohort and year random effects. In its current form, the model assumes that the **observed age of each sampled fish is the true age** — i.e., ages are measured without error or bias. In practice, however, otolith-based age readings can be uncertain, systematically biased, or simply unavailable in some survey years. When ages are misclassified, observed weights-at-age are contaminated by fish from neighboring true-age classes, leading to biased estimates of growth parameters and incorrect predictions of future weights.
+
+This document formalizes the mathematical machinery needed to extend `wt.tpl` to accommodate age uncertainty, focusing on: (1) the baseline model structure, (2) an age-reading error model, (3) the induced likelihood, and (4) bias-correction approaches.
+
+---
+
+## Baseline Model (Ages Assumed Known)
+
+### Mean Weight-at-Age
+
+The deterministic backbone of `wt.tpl` is a discrete, three-parameter von Bertalanffy weight function. Letting $\bar{w}_a$ denote the mean weight at true age $a$, and $L_1$, $L_2$ the mean lengths at the youngest and oldest modeled ages ($a_1$ and $a_A$, respectively), with $A = a_A - a_1 + 1$ ages total, the mean length at age is:
+
+$$
+\bar{L}_a = L_1 + (L_2 - L_1)\,\frac{1 - K^{\,a - a_1}}{1 - K^{\,A-1}}, \qquad a = a_1, \ldots, a_A,
+$$
+
+and the corresponding mean weight follows an isometric length–weight relationship:
+
+$$
+\bar{w}_a = \alpha\,\bar{L}_a^{\,3}.
+$$
+
+The growth increment at age $a$ is:
+
+$$
+\Delta_a = \bar{w}_{a+1} - \bar{w}_a, \qquad a = a_1, \ldots, a_A - 1.
+$$
+
+### Dynamic Weight Predictions with Random Effects
+
+Let $\hat{w}_{y,a}$ denote the model-predicted weight in year $y$ at age $a$. The model propagates weights forward in time using cohort ($c$) and year ($y$) random effects:
+
+$$
+\hat{w}_{y,\,a_1} = \bar{w}_{a_1}\exp\!\left(\tfrac{1}{2}\sigma_c^2 + \sigma_c\,c_y\right),
+$$
+
+$$
+\hat{w}_{y,a} = \hat{w}_{y-1,\,a-1} + \Delta_{a-1}\exp\!\left(\tfrac{1}{2}\sigma_y^2 + \sigma_y\,u_y\right), \quad a > a_1,
+$$
+
+where:
+
+- $c_y \sim \mathcal{N}(0,1)$ is the **cohort random effect** for the cohort entering at year $y$,
+- $u_y \sim \mathcal{N}(0,1)$ is the **year random effect** governing common deviations in growth increment,
+- $\sigma_c > 0$ and $\sigma_y > 0$ are the corresponding standard deviations.
+
+The log-normal formulation (with the $\tfrac{1}{2}\sigma^2$ bias correction) ensures that $\mathbb{E}[\hat{w}_{y,a}] = \bar{w}_a$ on average.
+
+### Observation Model and Likelihood
+
+Observed mean weights $w^{\mathrm{obs}}_{h,y,a}$ in dataset $h$, year $y$, and age $a$ are related to model predictions by:
+
+$$
+w^{\mathrm{obs}}_{h,y,a} \;\sim\; \mathcal{N}\!\left(\delta_h\,\hat{w}_{y,a},\; \sigma^{2,\mathrm{obs}}_{h,y,a}\right),
+$$
+
+where $\delta_h$ is a dataset-specific scale factor (with $\delta_1 = 1$ for the reference fishery dataset), and $\sigma^{\mathrm{obs}}_{h,y,a}$ is the provided observation standard error.
+
+The marginal negative log-likelihood (integrating over random effects via the Laplace approximation) is:
+
+$$
+\ell = \sum_h\sum_y\sum_a \frac{\left(w^{\mathrm{obs}}_{h,y,a} - \delta_h\,\hat{w}_{y,a}\right)^2}{2\,\sigma^{2,\mathrm{obs}}_{h,y,a}} + \frac{1}{2}\sum_y c_y^2 + \frac{1}{2}\sum_y u_y^2.
+$$
+
+---
+
+## Sources of Age Uncertainty
+
+Age uncertainty enters the model through at least two distinct mechanisms.
+
+### Age-Reading Error
+
+Otolith-based age determination is imperfect. A fish of **true age** $a^*$ may be assigned **read age** $a$ by an age reader with probability:
+
+$$
+\pi_{a^*,a} = \Pr(\text{read age} = a \mid \text{true age} = a^*).
+$$
+
+The matrix $\boldsymbol{\Pi} = [\pi_{a^*,a}]$ (dimensions $A \times A$, rows = true ages, columns = read ages) is called the **age-reading error matrix** (AREM). Its rows sum to one: $\sum_a \pi_{a^*,a} = 1$ for all $a^*$.
+
+Entries of $\boldsymbol{\Pi}$ are typically parameterized by a discrete normal or logistic-normal distribution centered at the true age with spread $\sigma_{\mathrm{ae}}$:
+
+$$
+\pi_{a^*,a} \;\propto\; \exp\!\left(-\frac{(a - a^*)^2}{2\,\sigma_{\mathrm{ae}}^2}\right), \qquad a = a_1,\ldots,a_A,
+$$
+
+normalized so that each row sums to one. The parameter $\sigma_{\mathrm{ae}}$ characterizes **imprecision** in age reading; systematic **bias** can be introduced by shifting the mode:
+
+$$
+\pi_{a^*,a} \;\propto\; \exp\!\left(-\frac{(a - a^* - \mu_{\mathrm{ae}})^2}{2\,\sigma_{\mathrm{ae}}^2}\right),
+$$
+
+where $\mu_{\mathrm{ae}}$ is the mean misclassification bias (negative = ages are systematically underestimated, positive = overestimated).
+
+### Age Subsampling / Missing Ages
+
+In years where no age readings are collected, the age composition of the weight sample is unknown. The true age distribution must then be reconstructed from an **age-length key** or from temporal smoothing, adding a second layer of uncertainty.
+
+---
+
+## Contaminated Observed Weights
+
+When age-reading error is present, what is actually observed in year $y$ at **read age** $a$ is not $\hat{w}_{y,a}$ but rather a mixture over all true ages $a^*$ that could have been misread as $a$:
+
+$$
+\tilde{w}_{y,a} = \sum_{a^*=a_1}^{a_A} \pi_{a^*,a}\;\hat{w}_{y,a^*},
+$$
+
+assuming that the number of fish sampled at read age $a$ is large enough to treat $\tilde{w}_{y,a}$ as the population expectation. This quantity $\tilde{w}_{y,a}$ is the **expected contaminated weight** — the predicted value one would observe if ages were recorded with the error structure encoded by $\boldsymbol{\Pi}$.
+
+In matrix form, if $\mathbf{w}_y = (\hat{w}_{y,a_1},\ldots,\hat{w}_{y,a_A})^\top$ is the column vector of true predicted weights in year $y$, then the vector of contaminated predicted weights is:
+
+$$
+\tilde{\mathbf{w}}_y = \boldsymbol{\Pi}^\top \mathbf{w}_y.
+$$
+
+---
+
+## Extended Likelihood Accounting for Age Error
+
+### Likelihood Conditional on True Age Assignments
+
+Suppose that in year $y$ and read-age class $a$, a total of $n_{y,a}$ fish are weighed, with true ages distributed according to some probability vector $\mathbf{p}_{y,a} = (p_{y,a,a_1},\ldots,p_{y,a,a_A})$. The observed mean weight at read age $a$ in year $y$ is:
+
+$$
+w^{\mathrm{obs}}_{y,a} = \frac{1}{n_{y,a}}\sum_{k=1}^{n_{y,a}} W_k,
+$$
+
+where $W_k$ is the weight of the $k$-th fish, which has true age $a^*_k$ drawn from $\mathbf{p}_{y,a}$.
+
+Conditioning on the vector of true ages, the mean and variance of $w^{\mathrm{obs}}_{y,a}$ are:
+
+$$
+\mathbb{E}\!\left[w^{\mathrm{obs}}_{y,a}\right] = \sum_{a^*} p_{y,a,a^*}\,\hat{w}_{y,a^*} = \tilde{w}_{y,a},
+$$
+
+$$
+\mathrm{Var}\!\left[w^{\mathrm{obs}}_{y,a}\right] = \frac{\sigma^{2,\mathrm{obs}}_{y,a}}{n_{y,a}} + \sum_{a^*} p_{y,a,a^*}\!\left(\hat{w}_{y,a^*} - \tilde{w}_{y,a}\right)^2,
+$$
+
+where the first term is within-age-class sampling variance and the second term is **age-confusion variance** arising from the spread of true ages that map to read age $a$.
+
+### Modified Observation Equation
+
+The updated negative log-likelihood, replacing $\hat{w}_{y,a}$ with $\tilde{w}_{y,a}$ and inflating the variance to include age-confusion variance, is:
+
+$$
+\ell^{\mathrm{ae}} = \sum_h\sum_y\sum_a \frac{\left(w^{\mathrm{obs}}_{h,y,a} - \delta_h\,\tilde{w}_{h,y,a}\right)^2}{2\,V_{h,y,a}} + \frac{1}{2}\sum_y c_y^2 + \frac{1}{2}\sum_y u_y^2,
+$$
+
+where the total variance is:
+
+$$
+V_{h,y,a} = \sigma^{2,\mathrm{obs}}_{h,y,a} + \kappa_h\sum_{a^*} \pi_{a^*,a}\!\left(\hat{w}_{h,y,a^*} - \tilde{w}_{h,y,a}\right)^2.
+$$
+
+The parameter $\kappa_h \geq 0$ controls the magnitude of the age-confusion contribution and may itself be estimated or fixed based on external information about age-reading precision.
+
+### Marginal Likelihood over Uncertain True Ages
+
+A more formal treatment marginalizes over unknown true ages. Define the probability that a fish weighed at read age $a$ in year $y$ has true age $a^*$ as:
+
+$$
+q_{y,a,a^*} = \frac{\pi_{a^*,a}\,f_{y,a^*}}{\sum_{a''}\pi_{a'',a}\,f_{y,a''}},
+$$
+
+where $f_{y,a^*}$ is the **true age frequency** (abundance-at-age) in year $y$, typically obtained from an external stock assessment or estimated as a nuisance parameter. By Bayes' theorem, $q_{y,a,a^*}$ is the posterior probability that a fish with read age $a$ has true age $a^*$.
+
+The marginal log-likelihood for the weight observation $w^{\mathrm{obs}}_{y,a}$ is then:
+
+$$
+\log \mathcal{L}_{y,a} = \log\!\left[\sum_{a^*} q_{y,a,a^*}\;\phi\!\left(w^{\mathrm{obs}}_{y,a};\;\hat{w}_{y,a^*},\;\sigma^{2,\mathrm{obs}}_{y,a}\right)\right],
+$$
+
+where $\phi(\cdot\,;\mu,\sigma^2)$ denotes the normal probability density with mean $\mu$ and variance $\sigma^2$. This integrates out the latent true age, treating each candidate true age $a^*$ as a mixture component weighted by its posterior probability $q_{y,a,a^*}$.
+
+---
+
+## Bias Characterization
+
+Let $\bar{a}^*$ be the mean true age of fish sampled at read age $a$ in year $y$:
+
+$$
+\bar{a}^*_{y,a} = \sum_{a^*} q_{y,a,a^*}\,a^*.
+$$
+
+The **age bias** at read age $a$ is $b_{y,a} = a - \bar{a}^*_{y,a}$. When $b_{y,a} > 0$, fish at read age $a$ are on average younger than reported (ages overestimated); when $b_{y,a} < 0$, they are older.
+
+The resulting **weight bias** at read age $a$ is approximately:
+
+$$
+\mathrm{Bias}\!\left[\tilde{w}_{y,a}\right] \approx b_{y,a}\,\frac{\partial \hat{w}_{y,a}}{\partial a}\Bigg|_{a\,=\,\bar{a}^*_{y,a}},
+$$
+
+which can be approximated by the finite difference $b_{y,a}\,\Delta_{a-1}$ (using the growth increment defined in @sec-baseline). This first-order approximation shows that age bias causes weight bias proportional to the growth rate at that age — the effect is largest for young, fast-growing fish.
+
+---
+
+## Year-Specific Age-Error Effects
+
+In many stock assessments, age uncertainty varies among years: some years may have high-quality age data from dedicated otolith programs, while others rely on age-length keys or have no age data at all. The framework above generalizes naturally by allowing $\boldsymbol{\Pi}$ to vary with year:
+
+$$
+\pi^{(y)}_{a^*,a} = \Pr(\text{read age} = a \mid \text{true age} = a^*,\; \text{year} = y).
+$$
+
+For years with known, precise ages ($\sigma_{\mathrm{ae}} \to 0$), $\boldsymbol{\Pi}^{(y)} \to \mathbf{I}$ (identity matrix) and the model reduces to the original `wt.tpl` formulation. For years where ages are uncertain, $\boldsymbol{\Pi}^{(y)}$ spreads probability mass off the diagonal. For years with **no age data**, one option is to set $\boldsymbol{\Pi}^{(y)}$ to a broad prior (e.g., uniform over adjacent age classes), or to remove those year–age observations from the likelihood and rely on the random effects to borrow strength across years.
+
+---
+
+## Parameterization Strategy for ADMB Implementation
+
+The following additional parameters would be required in the extended `wt.tpl`:
+
+| Symbol | Description | Phase |
+|--------|-------------|-------|
+| $\sigma_{\mathrm{ae}}$ | Age-reading standard deviation | Estimated or fixed |
+| $\mu_{\mathrm{ae}}$ | Age-reading systematic bias | Estimated or fixed |
+| $\kappa$ | Scale of age-confusion variance contribution | Estimated or fixed |
+| $\boldsymbol{\Pi}$ | Age-reading error matrix (derived from $\sigma_{\mathrm{ae}}, \mu_{\mathrm{ae}}$) | Deterministic given above |
+
+If $\sigma_{\mathrm{ae}}$ and $\mu_{\mathrm{ae}}$ are known from double-read otolith studies or simulation experiments, $\boldsymbol{\Pi}$ can be treated as **fixed external data**, and the modification to the ADMB code is confined to replacing `wt_hat` with a matrix-weighted version `wt_hat_tilde` and inflating the variance accordingly.
+
+---
+
+## Summary of Required Modifications to `wt.tpl`
+
+The table below maps each mathematical object introduced above to a corresponding change in the ADMB template:
+
+| Mathematical Object | `wt.tpl` Analog | Required Change |
+|---------------------|-----------------|-----------------|
+| $\bar{w}_a$ | `mnwt(j)` | None |
+| $\hat{w}_{y,a}$ | `wt_pre(i,j)` | None |
+| $\boldsymbol{\Pi}$ | *(not present)* | Add `init_matrix age_err_mat(age_st,age_end,age_st,age_end)` |
+| $\tilde{w}_{y,a}$ | *(not present)* | Add `wt_hat_tilde(h,i) = age_err_mat * wt_hat(h,i)` |
+| $V_{h,y,a}$ | `sd_obs(h,i,j)^2` | Inflate with age-confusion variance |
+| $\ell^{\mathrm{ae}}$ | `nll` | Replace `wt_hat` with `wt_hat_tilde` and `sd_obs^2` with `V` |
+
+---
+
+## Next Steps
+
+This document establishes the theoretical framework. Concrete next steps for implementation include:
+
+1. **Obtain or simulate $\boldsymbol{\Pi}$** from age-reading precision studies (e.g., double-reads, known-age fish). This matrix should be year-specific wherever age-reading protocols changed.
+
+2. **Test sensitivity** — run the model with $\boldsymbol{\Pi} = \mathbf{I}$ to confirm it reproduces current output, then introduce progressively wider error distributions.
+
+3. **Compare likelihoods** (AIC/BIC) between the base model and the age-error-corrected model to assess whether the data support the additional complexity.
+
+4. **Propagate uncertainty** into forecast weights (`wt_cur`, `wt_next`, `wt_yraf`) using the delta method or MCMC to ensure that age-reading uncertainty is properly reflected in the standard errors reported by `sdreport`.

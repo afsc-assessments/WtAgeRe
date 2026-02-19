@@ -6,10 +6,15 @@
 #' @param datfile Either a path to an ADMB `.dat` file or a list returned by
 #'   [read_dat()].
 #' @param trim_retro Logical. If `TRUE`, mimic the ADMB `retro` trimming rule.
+#' @param age_error Optional age-error matrix specification. Use `NULL` for no
+#'   age error (default), a single matrix (applied to all datasets), a list of
+#'   matrices (one per dataset), or a 3D array with dimensions
+#'   `nages x nages x ndat`. Matrices are interpreted as
+#'   `P(read age | true age)` with rows summing to 1.
 #'
 #' @return A standardized list for RTMB fitting.
 #' @export
-make_wt_rtmb_data <- function(datfile, trim_retro = TRUE) {
+make_wt_rtmb_data <- function(datfile, trim_retro = TRUE, age_error = NULL) {
   dat <- if (is.character(datfile)) read_dat(datfile) else datfile
   if (!is.list(dat)) stop("`datfile` must be a file path or list.")
 
@@ -85,6 +90,8 @@ make_wt_rtmb_data <- function(datfile, trim_retro = TRUE) {
   }
 
   nages <- age_end - age_st + 1L
+  age_err <- .normalize_age_error(age_error = age_error, ndat = ndat, nages = nages)
+
   for (h in seq_len(ndat)) {
     if (ncol(wt_obs[[h]]) != nages || ncol(sd_obs[[h]]) != nages) {
       stop("Dataset ", h, " does not match expected age span (nages=", nages, ").")
@@ -104,9 +111,69 @@ make_wt_rtmb_data <- function(datfile, trim_retro = TRUE) {
     yrs_data = yrs_data,
     age_st = age_st,
     age_end = age_end,
+    nages = nages,
     wt_obs = wt_obs,
-    sd_obs = sd_obs
+    sd_obs = sd_obs,
+    age_error = age_err$matrices,
+    use_age_error = age_err$use_age_error
   )
+}
+
+.normalize_age_error <- function(age_error, ndat, nages) {
+  normalize_one <- function(mat) {
+    mat <- as.matrix(mat)
+    if (!all(dim(mat) == c(nages, nages))) {
+      stop("Each age-error matrix must be ", nages, " x ", nages, ".")
+    }
+    if (any(!is.finite(mat))) stop("Age-error matrices must be finite.")
+    if (any(mat < 0)) stop("Age-error matrices must be non-negative.")
+    rs <- rowSums(mat)
+    if (any(rs <= 0)) stop("Each row in an age-error matrix must have positive sum.")
+    if (max(abs(rs - 1)) > 1e-8) {
+      mat <- mat / rs
+    }
+    mat
+  }
+
+  if (is.null(age_error)) {
+    mats <- replicate(ndat, diag(nages), simplify = FALSE)
+    return(list(matrices = mats, use_age_error = FALSE))
+  }
+
+  if (is.matrix(age_error)) {
+    mats <- replicate(ndat, normalize_one(age_error), simplify = FALSE)
+    return(list(matrices = mats, use_age_error = TRUE))
+  }
+
+  if (is.array(age_error)) {
+    dims <- dim(age_error)
+    if (length(dims) != 3L || dims[1] != nages || dims[2] != nages || dims[3] != ndat) {
+      stop("Age-error array must have dimensions nages x nages x ndat.")
+    }
+    mats <- lapply(seq_len(ndat), function(i) normalize_one(age_error[, , i]))
+    return(list(matrices = mats, use_age_error = TRUE))
+  }
+
+  if (is.list(age_error)) {
+    if (length(age_error) == 1L) {
+      mats <- replicate(ndat, normalize_one(age_error[[1]]), simplify = FALSE)
+    } else if (length(age_error) == ndat) {
+      mats <- lapply(age_error, normalize_one)
+    } else {
+      stop("Age-error list must have length 1 or ndat (", ndat, ").")
+    }
+    return(list(matrices = mats, use_age_error = TRUE))
+  }
+
+  stop("Unsupported `age_error` format. Use NULL, matrix, list, or 3D array.")
+}
+
+.apply_age_error <- function(pred_true, age_error_matrix) {
+  out <- pred_true * 0
+  for (a in seq_along(out)) {
+    out[a] <- sum(age_error_matrix[, a] * pred_true)
+  }
+  out
 }
 
 .wt_build_states <- function(dat, par, bias_correct_year = TRUE) {
@@ -139,29 +206,50 @@ make_wt_rtmb_data <- function(datfile, trim_retro = TRUE) {
   }
 
   wt_hat <- vector("list", dat$ndat)
+  wt_hat_true <- vector("list", dat$ndat)
+  wt_hat_obs <- vector("list", dat$ndat)
   residuals <- vector("list", dat$ndat)
   nll_data <- 0
 
   for (h in seq_len(dat$ndat)) {
     nh <- dat$nyrs_data[h]
     pred_h <- matrix(NA, nrow = nh, ncol = nages)
-    for (i in seq_len(nh)) {
-      yidx <- dat$yrs_data[[h]][i] - dat$styr + 1L
-      pred_i <- wt_pre[yidx, ]
+    pred_h_true <- matrix(NA, nrow = nh, ncol = nages)
+    pred_h_obs <- matrix(NA, nrow = nh, ncol = nages)
+    mean_h <- mnwt
+    if (isTRUE(dat$use_age_error)) {
       if (h > 1L) {
         idx <- ((h - 2L) * nages + 1L):((h - 1L) * nages)
-        pred_i <- pred_i * par$d_scale[idx]
+        mean_h <- mean_h * par$d_scale[idx]
       }
-      pred_h[i, ] <- pred_i
+      mean_h <- .apply_age_error(mean_h, dat$age_error[[h]])
     }
-    wt_hat[[h]] <- pred_h
-    residuals[[h]] <- dat$wt_obs[[h]] - pred_h
+    for (i in seq_len(nh)) {
+      yidx <- dat$yrs_data[[h]][i] - dat$styr + 1L
+      pred_i_true <- wt_pre[yidx, ]
+      if (h > 1L) {
+        idx <- ((h - 2L) * nages + 1L):((h - 1L) * nages)
+        pred_i_true <- pred_i_true * par$d_scale[idx]
+      }
+      pred_i_obs <- if (isTRUE(dat$use_age_error)) {
+        .apply_age_error(pred_i_true, dat$age_error[[h]])
+      } else {
+        pred_i_true
+      }
+      pred_h_true[i, ] <- pred_i_true
+      pred_h_obs[i, ] <- pred_i_obs
+      pred_h[i, ] <- pred_i_obs
+    }
+    wt_hat_true[[h]] <- pred_h_true
+    wt_hat_obs[[h]] <- pred_h_obs
+    wt_hat[[h]] <- pred_h_obs
+    residuals[[h]] <- dat$wt_obs[[h]] - pred_h_obs
 
     sd_h <- dat$sd_obs[[h]]
     obs_h <- dat$wt_obs[[h]]
-    mn_h <- matrix(mnwt, nrow = nh, ncol = nages, byrow = TRUE)
+    mn_h <- matrix(mean_h, nrow = nh, ncol = nages, byrow = TRUE)
     nll_data <- nll_data + sum((obs_h - mn_h)^2 / (2 * sd_h^2))
-    nll_data <- nll_data + sum((obs_h - pred_h)^2 / (2 * sd_h^2))
+    nll_data <- nll_data + sum((obs_h - pred_h_obs)^2 / (2 * sd_h^2))
   }
 
   list(
@@ -175,6 +263,8 @@ make_wt_rtmb_data <- function(datfile, trim_retro = TRUE) {
     mnwt = mnwt,
     wt_pre = wt_pre,
     wt_hat = wt_hat,
+    wt_hat_true = wt_hat_true,
+    wt_hat_obs = wt_hat_obs,
     residuals = residuals,
     nll_data = nll_data
   )
@@ -201,10 +291,14 @@ wt_rtmb_report <- function(fit) {
     cur_yr = dat$cur_yr,
     data = do.call(rbind, dat$wt_obs),
     yr = matrix(seq.int(dat$styr, dat$endyr), ncol = 1),
-    wt_pre = states$wt_pre
+    wt_pre = states$wt_pre,
+    wt_pre_true = states$wt_pre
   )
 
   for (h in seq_len(dat$ndat)) {
+    out[[paste0("age_error_", h)]] <- dat$age_error[[h]]
+    out[[paste0("wt_hat_true_", h)]] <- states$wt_hat_true[[h]]
+    out[[paste0("wt_hat_obs_", h)]] <- states$wt_hat_obs[[h]]
     out[[paste0("residuals_", h)]] <- states$residuals[[h]]
   }
 
@@ -230,6 +324,9 @@ wt_rtmb_report <- function(fit) {
 #' @param trim_retro Logical. If `TRUE`, apply ADMB-style retrospective trimming.
 #' @param bias_correct_year Logical. If `TRUE`, use the final-phase ADMB form with
 #'   `0.5 * sigma_yr^2` in the yearly increment multiplier.
+#' @param age_error Optional age-error matrix specification passed to
+#'   [make_wt_rtmb_data()]. If provided, observations are fitted on read-age
+#'   scale using `t(age_error) %*% w_true`.
 #' @param start Optional named list overriding default starting values.
 #' @param control Optional `nlminb` control list.
 #' @param compute_sdrep Logical. If `TRUE`, compute `RTMB::sdreport()`.
@@ -240,6 +337,7 @@ fit_wt_rtmb <- function(
     datfile,
     trim_retro = TRUE,
     bias_correct_year = TRUE,
+    age_error = NULL,
     start = NULL,
     control = NULL,
     compute_sdrep = FALSE) {
@@ -247,7 +345,7 @@ fit_wt_rtmb <- function(
     stop("Package `RTMB` is required for `fit_wt_rtmb()`.")
   }
 
-  dat <- make_wt_rtmb_data(datfile = datfile, trim_retro = trim_retro)
+  dat <- make_wt_rtmb_data(datfile = datfile, trim_retro = trim_retro, age_error = age_error)
   nages <- dat$age_end - dat$age_st + 1L
   nyears <- dat$endyr - dat$styr + 1L
   nscale <- max(0L, dat$ndat - 1L)
@@ -310,17 +408,30 @@ fit_wt_rtmb <- function(
 
     nll <- 0
     for (h in seq_len(dat$ndat)) {
-      for (i in seq_len(dat$nyrs_data[h])) {
-        yidx <- dat$yrs_data[[h]][i] - dat$styr + 1L
-        pred <- wt_pre[[yidx]]
+      mean_obs_h <- mnwt
+      if (isTRUE(dat$use_age_error)) {
         if (h > 1L) {
           idx <- ((h - 2L) * nages_obj + 1L):((h - 1L) * nages_obj)
-          pred <- pred * d_scale[idx]
+          mean_obs_h <- mean_obs_h * d_scale[idx]
+        }
+        mean_obs_h <- .apply_age_error(mean_obs_h, dat$age_error[[h]])
+      }
+      for (i in seq_len(dat$nyrs_data[h])) {
+        yidx <- dat$yrs_data[[h]][i] - dat$styr + 1L
+        pred_true <- wt_pre[[yidx]]
+        if (h > 1L) {
+          idx <- ((h - 2L) * nages_obj + 1L):((h - 1L) * nages_obj)
+          pred_true <- pred_true * d_scale[idx]
+        }
+        pred_obs <- if (isTRUE(dat$use_age_error)) {
+          .apply_age_error(pred_true, dat$age_error[[h]])
+        } else {
+          pred_true
         }
         obs <- dat$wt_obs[[h]][i, ]
         sdo <- dat$sd_obs[[h]][i, ]
-        nll <- nll + sum((obs - mnwt)^2 / (2 * sdo^2))
-        nll <- nll + sum((obs - pred)^2 / (2 * sdo^2))
+        nll <- nll + sum((obs - mean_obs_h)^2 / (2 * sdo^2))
+        nll <- nll + sum((obs - pred_obs)^2 / (2 * sdo^2))
       }
     }
 
@@ -384,4 +495,76 @@ fit_wt_rtmb <- function(
 
 `%||%` <- function(lhs, rhs) {
   if (is.null(lhs)) rhs else lhs
+}
+
+#' Build an age-error matrix
+#'
+#' Constructs a row-stochastic matrix with entries
+#' `P(read age | true age)` over the supplied age vector.
+#'
+#' @param ages Integer or numeric vector of modeled ages.
+#' @param sigma Standard deviation of read-age error. If `sigma <= 0`, rows
+#'   collapse to deterministic nearest-age assignment.
+#' @param mu Mean age-reading bias in years (negative means under-aging).
+#'
+#' @return A matrix with rows indexing true age and columns indexing read age.
+#' @export
+make_age_error_matrix <- function(ages, sigma = 0, mu = 0) {
+  ages <- as.numeric(ages)
+  nages <- length(ages)
+  if (nages < 1L) stop("`ages` must have positive length.")
+  out <- matrix(0, nrow = nages, ncol = nages, dimnames = list(ages, ages))
+  for (i in seq_len(nages)) {
+    center <- ages[i] + mu
+    if (sigma > 0) {
+      row <- exp(-0.5 * ((ages - center) / sigma)^2)
+    } else {
+      row <- rep(0, nages)
+      row[which.min(abs(ages - center))] <- 1
+    }
+    out[i, ] <- row / sum(row)
+  }
+  out
+}
+
+#' Extract RTMB true weight-at-age values for assessment use
+#'
+#' @param fit A fitted object returned by [fit_wt_rtmb()].
+#' @param long Logical. If `FALSE` (default), return a year-by-age matrix.
+#'   If `TRUE`, return a long data frame with columns `year`, `age`, `wt_true`.
+#'
+#' @return Matrix or data frame of decontaminated ("true") weight-at-age.
+#' @export
+wt_rtmb_true_values <- function(fit, long = FALSE) {
+  if (!inherits(fit, "wt_rtmb_fit")) stop("`fit` must be an object from `fit_wt_rtmb()`.")
+  rr <- if (!is.null(fit$report)) fit$report else wt_rtmb_report(fit)
+  years <- as.integer(as.vector(rr$yr))
+  ages <- as.integer(rr$ages)
+  wt <- as.matrix(rr$wt_pre)
+  colnames(wt) <- as.character(ages)
+  rownames(wt) <- as.character(years)
+  if (!isTRUE(long)) return(wt)
+  data.frame(
+    year = rep(years, each = length(ages)),
+    age = rep(ages, times = length(years)),
+    wt_true = as.vector(wt)
+  )
+}
+
+#' Write RTMB true weight-at-age values for assessment use
+#'
+#' @param fit A fitted object returned by [fit_wt_rtmb()].
+#' @param file Output CSV path.
+#' @param long Logical. If `TRUE` (default), write long format with
+#'   `year, age, wt_true`. If `FALSE`, write a wide matrix (years x ages).
+#'
+#' @return Invisibly returns `file`.
+#' @export
+write_wt_rtmb_true_values <- function(fit, file, long = TRUE) {
+  vals <- wt_rtmb_true_values(fit, long = long)
+  if (!isTRUE(long)) {
+    vals <- data.frame(year = as.integer(rownames(vals)), vals, check.names = FALSE)
+  }
+  utils::write.csv(vals, file = file, row.names = FALSE)
+  invisible(file)
 }

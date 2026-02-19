@@ -47,3 +47,25 @@ if (exists("pred_rtmb") && exists("pred_admb")) {
   fn_plot_anoms(pred_both)
 }
 ```
+
+## Optional: Fit with age-error matrix and extract "true" WAA
+
+```{r}
+if (exists("fit_rtmb")) {
+  ages <- fit_rtmb$report$ages
+  arem <- make_age_error_matrix(ages = ages, sigma = 1.0, mu = -0.5)
+
+  fit_ageerr <- fit_wt_rtmb(
+    datfile = paste0(base, ".dat"),
+    age_error = arem,
+    control = list(iter.max = 200, eval.max = 400)
+  )
+
+  # Decontaminated (true-age scale) predictions for assessment model input
+  waa_true_long <- wt_rtmb_true_values(fit_ageerr, long = TRUE)
+  head(waa_true_long)
+
+  # Example write-out
+  # write_wt_rtmb_true_values(fit_ageerr, file = "wt_true_age_error.csv", long = TRUE)
+}
+```

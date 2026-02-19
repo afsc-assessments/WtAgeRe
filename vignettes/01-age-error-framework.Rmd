@@ -1,0 +1,36 @@
+---
+title: "Accounting for Age Uncertainty in Weights-at-Age Estimation"
+vignette: >
+  %\VignetteIndexEntry{Accounting for Age Uncertainty in Weights-at-Age Estimation}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+output: rmarkdown::html_vignette
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+```
+
+```{r, echo = FALSE, results = "asis"}
+candidates <- c(
+  file.path("doc", "age_error_framework.qmd"),
+  file.path("..", "doc", "age_error_framework.qmd"),
+  system.file("doc", "age_error_framework.qmd", package = "WtAgeRe")
+)
+source_file <- candidates[nzchar(candidates) & file.exists(candidates)][1]
+if (length(source_file) == 0 || is.na(source_file)) {
+  stop("Could not find source document: doc/age_error_framework.qmd")
+}
+
+txt <- readLines(source_file, warn = FALSE, encoding = "UTF-8")
+yaml_lines <- which(trimws(txt) == "---")
+if (length(yaml_lines) >= 2 && yaml_lines[1] == 1) {
+  txt <- txt[(yaml_lines[2] + 1):length(txt)]
+}
+
+while (length(txt) > 0 && trimws(txt[1]) == "") {
+  txt <- txt[-1]
+}
+
+cat(txt, sep = "\n")
+```

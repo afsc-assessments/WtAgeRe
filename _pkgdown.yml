@@ -1,3 +1,9 @@
 url: https://afsc-assessments.github.io/WtAgeRe/
 template:
   bootstrap: 5
+articles:
+  - title: Articles
+    navbar: Articles
+    contents:
+      - 00-ebspollock-example
+      - 01-age-error-framework

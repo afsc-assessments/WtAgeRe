@@ -18,5 +18,6 @@ Imports:
     scales
 Suggests:
     knitr,
+    RTMB,
     rmarkdown
 VignetteBuilder: knitr

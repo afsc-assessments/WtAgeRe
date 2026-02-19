@@ -1,6 +1,6 @@
 # Accounting for Age Uncertainty in Weights-at-Age Estimation
 
-### Overview
+## Overview
 
 The `wt.tpl` ADMB program estimates mean weights-at-age using a
 mixed-effects growth model with cohort and year random effects. In its
@@ -19,9 +19,9 @@ likelihood, and (4) bias-correction approaches.
 
 ------------------------------------------------------------------------
 
-### Baseline Model (Ages Assumed Known)
+## Baseline Model (Ages Assumed Known)
 
-#### Mean Weight-at-Age
+### Mean Weight-at-Age
 
 The deterministic backbone of `wt.tpl` is a discrete, three-parameter
 von Bertalanffy weight function. Letting $`\bar{w}_a`$ denote the mean
@@ -46,7 +46,7 @@ The growth increment at age $`a`$ is:
 \Delta_a = \bar{w}_{a+1} - \bar{w}_a, \qquad a = a_1, \ldots, a_A - 1.
 ```
 
-#### Dynamic Weight Predictions with Random Effects
+### Dynamic Weight Predictions with Random Effects
 
 Let $`\hat{w}_{y,a}`$ denote the model-predicted weight in year $`y`$ at
 age $`a`$. The model propagates weights forward in time using cohort
@@ -73,7 +73,7 @@ The log-normal formulation (with the $`\tfrac{1}{2}\sigma^2`$ bias
 correction) ensures that $`\mathbb{E}[\hat{w}_{y,a}] = \bar{w}_a`$ on
 average.
 
-#### Observation Model and Likelihood
+### Observation Model and Likelihood
 
 Observed mean weights $`w^{\mathrm{obs}}_{h,y,a}`$ in dataset $`h`$,
 year $`y`$, and age $`a`$ are related to model predictions by:
@@ -96,12 +96,12 @@ via the Laplace approximation) is:
 
 ------------------------------------------------------------------------
 
-### Sources of Age Uncertainty
+## Sources of Age Uncertainty
 
 Age uncertainty enters the model through at least two distinct
 mechanisms.
 
-#### Age-Reading Error
+### Age-Reading Error
 
 Otolith-based age determination is imperfect. A fish of **true age**
 $`a^*`$ may be assigned **read age** $`a`$ by an age reader with
@@ -135,7 +135,7 @@ systematic **bias** can be introduced by shifting the mode:
 where $`\mu_{\mathrm{ae}}`$ is the mean misclassification bias (negative
 = ages are systematically underestimated, positive = overestimated).
 
-#### Age Subsampling / Missing Ages
+### Age Subsampling / Missing Ages
 
 In years where no age readings are collected, the age composition of the
 weight sample is unknown. The true age distribution must then be
@@ -144,7 +144,7 @@ adding a second layer of uncertainty.
 
 ------------------------------------------------------------------------
 
-### Contaminated Observed Weights
+## Contaminated Observed Weights
 
 When age-reading error is present, what is actually observed in year
 $`y`$ at **read age** $`a`$ is not $`\hat{w}_{y,a}`$ but rather a
@@ -172,9 +172,9 @@ of contaminated predicted weights is:
 
 ------------------------------------------------------------------------
 
-### Extended Likelihood Accounting for Age Error
+## Extended Likelihood Accounting for Age Error
 
-#### Likelihood Conditional on True Age Assignments
+### Likelihood Conditional on True Age Assignments
 
 Suppose that in year $`y`$ and read-age class $`a`$, a total of
 $`n_{y,a}`$ fish are weighed, with true ages distributed according to
@@ -204,7 +204,7 @@ where the first term is within-age-class sampling variance and the
 second term is **age-confusion variance** arising from the spread of
 true ages that map to read age $`a`$.
 
-#### Modified Observation Equation
+### Modified Observation Equation
 
 The updated negative log-likelihood, replacing $`\hat{w}_{y,a}`$ with
 $`\tilde{w}_{y,a}`$ and inflating the variance to include age-confusion
@@ -224,7 +224,7 @@ The parameter $`\kappa_h \geq 0`$ controls the magnitude of the
 age-confusion contribution and may itself be estimated or fixed based on
 external information about age-reading precision.
 
-#### Marginal Likelihood over Uncertain True Ages
+### Marginal Likelihood over Uncertain True Ages
 
 A more formal treatment marginalizes over unknown true ages. Define the
 probability that a fish weighed at read age $`a`$ in year $`y`$ has true
@@ -254,7 +254,7 @@ mixture component weighted by its posterior probability $`q_{y,a,a^*}`$.
 
 ------------------------------------------------------------------------
 
-### Bias Characterization
+## Bias Characterization
 
 Let $`\bar{a}^*`$ be the mean true age of fish sampled at read age $`a`$
 in year $`y`$:
@@ -282,7 +282,7 @@ $`-\,b_{y,a}\,\Delta_{a-1}`$ (using the growth increment defined in
 causes weight bias proportional to the growth rate at that age; the
 effect is largest for young, fast-growing fish.
 
-#### Why True-to-Observed Ages Can Look Biased
+### Why True-to-Observed Ages Can Look Biased
 
 Even when the forward age-reading matrix $`\boldsymbol{\Pi}`$ is only
 weakly biased, the **inverse mapping** from read age to expected true
@@ -306,7 +306,7 @@ the raw AREM.
 
 ------------------------------------------------------------------------
 
-### Year-Specific Age-Error Effects
+## Year-Specific Age-Error Effects
 
 In many stock assessments, age uncertainty varies among years: some
 years may have high-quality age data from dedicated otolith programs,
@@ -330,7 +330,7 @@ years.
 
 ------------------------------------------------------------------------
 
-### Parameterization Strategy for ADMB Implementation
+## Parameterization Strategy for ADMB Implementation
 
 The following additional parameters would be required in the extended
 `wt.tpl`:
@@ -351,7 +351,7 @@ accordingly.
 
 ------------------------------------------------------------------------
 
-### Summary of Required Modifications to `wt.tpl`
+## Summary of Required Modifications to `wt.tpl`
 
 The table below maps each mathematical object introduced above to a
 corresponding change in the ADMB template:
@@ -367,7 +367,7 @@ corresponding change in the ADMB template:
 
 ------------------------------------------------------------------------
 
-### Simulation: Comparing Known-Age vs Age-Error Scenarios
+## Simulation: Comparing Known-Age vs Age-Error Scenarios
 
 The following R simulation uses parameters drawn from `wt.tpl` (Atka
 mackerel configuration, ages 2–11) to demonstrate the practical
@@ -382,352 +382,466 @@ side-by-side:
   Contaminated weights are systematically distorted, and a naïve fit
   misleads parameter estimation.
 
-#### Setup: Growth Model and Parameters
+### Setup: Growth Model and Parameters
 
-\`\`\`{r setup} \#\| message: false \#\| warning: false library(ggplot2)
-library(patchwork) \# for combining panels; install if needed
+``` r
 
-## ── Growth parameters (from wt.tpl initialization) ───────────────────────────
+library(ggplot2)
+library(patchwork)   # for combining panels; install if needed
 
-L1 \<- 27.0 \# mean length at youngest age (cm) L2 \<- 46.0 \# mean
-length at oldest age (cm) K \<- exp(-0.13) \# Brody growth coefficient
-alpha \<- exp(-11.0) \# length-weight scalar (gives weights in kg)
+# ── Growth parameters (from wt.tpl initialization) ───────────────────────────
+L1      <- 27.0          # mean length at youngest age (cm)
+L2      <- 46.0          # mean length at oldest age (cm)
+K       <- exp(-0.13)    # Brody growth coefficient
+alpha   <- exp(-11.0)    # length-weight scalar (gives weights in kg)
 
-## ── Age and year ranges ───────────────────────────────────────────────────────
+# ── Age and year ranges ───────────────────────────────────────────────────────
+age_st  <- 2L
+age_end <- 11L
+ages    <- seq(age_st, age_end)
+nages   <- length(ages)
 
-age_st \<- 2L age_end \<- 11L ages \<- seq(age_st, age_end) nages \<-
-length(ages)
+styr    <- 1980L
+endyr   <- 2022L
+years   <- seq(styr, endyr)
+nyrs    <- length(years)
 
-styr \<- 1980L endyr \<- 2022L years \<- seq(styr, endyr) nyrs \<-
-length(years)
+# ── Random-effects standard deviations ───────────────────────────────────────
+sigma_coh <- exp(-1.8)   # cohort SD
+sigma_yr  <- exp(-0.82)  # year SD
 
-## ── Random-effects standard deviations ───────────────────────────────────────
+# ── Observation noise (CV ~ 10%) ─────────────────────────────────────────────
+obs_cv <- 0.10
 
-sigma_coh \<- exp(-1.8) \# cohort SD sigma_yr \<- exp(-0.82) \# year SD
-
-## ── Observation noise (CV ~ 10%) ─────────────────────────────────────────────
-
-obs_cv \<- 0.10
-
-## ── Age-reading error parameters (Case 2) ────────────────────────────────────
-
-sigma_ae \<- 1.2 \# imprecision: ~1.2-year SD in read ages mu_ae \<-
--1.0 \# bias: ages systematically underestimated by ~1 year
+# ── Age-reading error parameters (Case 2) ────────────────────────────────────
+sigma_ae <- 1.2    # imprecision: ~1.2-year SD in read ages
+mu_ae    <- -1.0   # bias: ages systematically underestimated by ~1 year
 
 set.seed(2024)
+```
 
+### Mean Weight-at-Age and Growth Increments
 
-    ### Mean Weight-at-Age and Growth Increments
+``` r
 
-    ```{r growth-curve}
-    # Discrete von Bertalanffy mean length then mean weight
-    L_bar <- L1 + (L2 - L1) * (1 - K^(ages - age_st)) / (1 - K^(nages - 1))
-    w_bar <- alpha * L_bar^3          # mean weight at age (kg)
-    wt_inc <- diff(w_bar)             # Δ_a = w_bar[a+1] - w_bar[a]
+# Discrete von Bertalanffy mean length then mean weight
+L_bar <- L1 + (L2 - L1) * (1 - K^(ages - age_st)) / (1 - K^(nages - 1))
+w_bar <- alpha * L_bar^3          # mean weight at age (kg)
+wt_inc <- diff(w_bar)             # Δ_a = w_bar[a+1] - w_bar[a]
 
-    names(w_bar)  <- ages
-    names(wt_inc) <- ages[-nages]
+names(w_bar)  <- ages
+names(wt_inc) <- ages[-nages]
+```
 
-#### Simulate True Weight Trajectories (with Random Effects)
+### Simulate True Weight Trajectories (with Random Effects)
 
-\`\`\`{r simulate-truth} \# Draw random effects (unit normal, same
-convention as wt.tpl) coh_eff \<- rnorm(nyrs) yr_eff \<- rnorm(nyrs)
+``` r
 
-## wt_true\[year index, age index\]
+# Draw random effects (unit normal, same convention as wt.tpl)
+coh_eff <- rnorm(nyrs)
+yr_eff  <- rnorm(nyrs)
 
-wt_true \<- matrix(NA_real\_, nrow = nyrs, ncol = nages, dimnames =
-list(years, ages))
+# wt_true[year index, age index]
+wt_true <- matrix(NA_real_, nrow = nyrs, ncol = nages,
+                  dimnames = list(years, ages))
 
-## First year: mean weights (no random effects to propagate)
+# First year: mean weights (no random effects to propagate)
+wt_true[1, ] <- w_bar
 
-wt_true\[1, \] \<- w_bar
+# Subsequent years: cohort effect enters at youngest age;
+# year effect scales the growth increment (exact wt.tpl logic)
+for (i in seq(2, nyrs)) {
+  wt_true[i, 1] <- w_bar[1] *
+    exp(0.5 * sigma_coh^2 + sigma_coh * coh_eff[i])
+  wt_true[i, -1] <- wt_true[i - 1, -nages] +
+    wt_inc * exp(0.5 * sigma_yr^2 + sigma_yr * yr_eff[i])
+}
+```
 
-## Subsequent years: cohort effect enters at youngest age;
+### Build the Age-Reading Error Matrix $`\boldsymbol{\Pi}`$
 
-## year effect scales the growth increment (exact wt.tpl logic)
+``` r
 
-for (i in seq(2, nyrs)) { wt_true\[i, 1\] \<- w_bar\[1\] *exp(0.5*
-sigma_coh^2 + sigma_coh \* coh_eff\[i\]) wt_true\[i, -1\] \<-
-wt_true\[i - 1, -nages\] + wt_inc \* exp(0.5 \* sigma_yr^2 + sigma_yr \*
-yr_eff\[i\]) }
+#' Construct a row-stochastic AREM
+#' @param ages  integer vector of modeled ages
+#' @param sigma SD of the discrete-normal misclassification kernel
+#' @param mu    bias (shift) in read age relative to true age
+make_Pi <- function(ages, sigma = 0, mu = 0) {
+  A  <- length(ages)
+  Pi <- matrix(0, A, A, dimnames = list(true = ages, read = ages))
+  for (r in seq_len(A)) {           # row = true age
+    a_star <- ages[r]
+    log_p  <- -(ages - a_star - mu)^2 / (2 * sigma^2)
+    Pi[r, ] <- exp(log_p) / sum(exp(log_p))
+  }
+  Pi
+}
 
+Pi_identity <- diag(nages)                           # Case 1: no error
+dimnames(Pi_identity) <- list(ages, ages)
+Pi_error    <- make_Pi(ages, sigma = sigma_ae, mu = mu_ae)  # Case 2
+```
 
-    ### Build the Age-Reading Error Matrix $\boldsymbol{\Pi}$
+### Contaminate Observed Weights
 
-    ```{r arem}
-    #' Construct a row-stochastic AREM
-    #' @param ages  integer vector of modeled ages
-    #' @param sigma SD of the discrete-normal misclassification kernel
-    #' @param mu    bias (shift) in read age relative to true age
-    make_Pi <- function(ages, sigma = 0, mu = 0) {
-      A  <- length(ages)
-      Pi <- matrix(0, A, A, dimnames = list(true = ages, read = ages))
-      for (r in seq_len(A)) {           # row = true age
-        a_star <- ages[r]
-        log_p  <- -(ages - a_star - mu)^2 / (2 * sigma^2)
-        Pi[r, ] <- exp(log_p) / sum(exp(log_p))
-      }
-      Pi
-    }
+``` r
 
-    Pi_identity <- diag(nages)                           # Case 1: no error
-    dimnames(Pi_identity) <- list(ages, ages)
-    Pi_error    <- make_Pi(ages, sigma = sigma_ae, mu = mu_ae)  # Case 2
+# For each year, apply Pi^T to the true weight vector:
+#   w_tilde[a] = sum_{a*} Pi[a*, a] * w_true[a*]  =  (Pi^T %*% w_true)[a]
+contaminate <- function(wt_mat, Pi) {
+  # wt_mat: [nyrs x nages]; returns same dimension
+  t(apply(wt_mat, 1, function(w) as.vector(crossprod(Pi, w))))
+}
 
-#### Contaminate Observed Weights
+# Add independent Gaussian observation noise (proportional to true weight)
+add_noise <- function(wt_mat, cv) {
+  sd_mat <- wt_mat * cv
+  wt_mat + matrix(rnorm(length(wt_mat), 0, sd_mat),
+                  nrow = nrow(wt_mat))
+}
 
-\`\`\`{r contaminate} \# For each year, apply Pi^T to the true weight
-vector: \# w_tilde\[a\] = sum\_{a*} Pi\[a\*, a\]* w_true\[a\*\] = (Pi^T
-%\*% w_true)\[a\] contaminate \<- function(wt_mat, Pi) { \# wt_mat:
-\[nyrs x nages\]; returns same dimension t(apply(wt_mat, 1, function(w)
-as.vector(crossprod(Pi, w)))) }
+wt_obs_c1 <- add_noise(contaminate(wt_true, Pi_identity), obs_cv)  # Case 1
+wt_obs_c2 <- add_noise(contaminate(wt_true, Pi_error),    obs_cv)  # Case 2
+```
 
-## Add independent Gaussian observation noise (proportional to true weight)
+### Fit Mean Weight-at-Age (Naïve VB Fit to Year-Averaged Observations)
 
-add_noise \<- function(wt_mat, cv) { sd_mat \<- wt_mat \* cv wt_mat +
-matrix(rnorm(length(wt_mat), 0, sd_mat), nrow = nrow(wt_mat)) }
+``` r
 
-wt_obs_c1 \<- add_noise(contaminate(wt_true, Pi_identity), obs_cv) \#
-Case 1 wt_obs_c2 \<- add_noise(contaminate(wt_true, Pi_error), obs_cv)
-\# Case 2
+# Objective: fit alpha, L1, L2, K to observed mean-weight-at-age profile
+# (ignoring year/cohort effects — this is the "plug-in mean" fit)
+vb_weights <- function(pars, ages, age_st, nages) {
+  L1_    <- exp(pars[1])
+  L2_    <- exp(pars[2])
+  K_     <- plogis(pars[3])          # keep K in (0,1)
+  alpha_ <- exp(pars[4])
+  L_a    <- L1_ + (L2_ - L1_) * (1 - K_^(ages - age_st)) / (1 - K_^(nages - 1))
+  alpha_ * L_a^3
+}
 
+nll_vb <- function(pars, obs_mean, obs_sd, ages, age_st, nages) {
+  pred <- vb_weights(pars, ages, age_st, nages)
+  sum(((obs_mean - pred) / obs_sd)^2) / 2
+}
 
-    ### Fit Mean Weight-at-Age (Naïve VB Fit to Year-Averaged Observations)
+# Year-averaged observed weights and their SDs (across years)
+mn_c1  <- colMeans(wt_obs_c1, na.rm = TRUE)
+mn_c2  <- colMeans(wt_obs_c2, na.rm = TRUE)
+sd_c1  <- apply(wt_obs_c1, 2, sd) / sqrt(nyrs)
+sd_c2  <- apply(wt_obs_c2, 2, sd) / sqrt(nyrs)
 
-    ```{r fitting}
-    # Objective: fit alpha, L1, L2, K to observed mean-weight-at-age profile
-    # (ignoring year/cohort effects — this is the "plug-in mean" fit)
-    vb_weights <- function(pars, ages, age_st, nages) {
-      L1_    <- exp(pars[1])
-      L2_    <- exp(pars[2])
-      K_     <- plogis(pars[3])          # keep K in (0,1)
-      alpha_ <- exp(pars[4])
-      L_a    <- L1_ + (L2_ - L1_) * (1 - K_^(ages - age_st)) / (1 - K_^(nages - 1))
-      alpha_ * L_a^3
-    }
+# Starting values on transformed scale
+p0 <- c(log(L1), log(L2), qlogis(K), log(alpha))
 
-    nll_vb <- function(pars, obs_mean, obs_sd, ages, age_st, nages) {
-      pred <- vb_weights(pars, ages, age_st, nages)
-      sum(((obs_mean - pred) / obs_sd)^2) / 2
-    }
+fit_c1 <- optim(p0, nll_vb, obs_mean = mn_c1, obs_sd = sd_c1,
+                ages = ages, age_st = age_st, nages = nages,
+                method = "BFGS")
+fit_c2 <- optim(p0, nll_vb, obs_mean = mn_c2, obs_sd = sd_c2,
+                ages = ages, age_st = age_st, nages = nages,
+                method = "BFGS")
 
-    # Year-averaged observed weights and their SDs (across years)
-    mn_c1  <- colMeans(wt_obs_c1, na.rm = TRUE)
-    mn_c2  <- colMeans(wt_obs_c2, na.rm = TRUE)
-    sd_c1  <- apply(wt_obs_c1, 2, sd) / sqrt(nyrs)
-    sd_c2  <- apply(wt_obs_c2, 2, sd) / sqrt(nyrs)
+pred_true <- w_bar
+pred_c1   <- vb_weights(fit_c1$par, ages, age_st, nages)
+pred_c2   <- vb_weights(fit_c2$par, ages, age_st, nages)
+```
 
-    # Starting values on transformed scale
-    p0 <- c(log(L1), log(L2), qlogis(K), log(alpha))
+### Figure 1 — Age-Reading Error Matrix
 
-    fit_c1 <- optim(p0, nll_vb, obs_mean = mn_c1, obs_sd = sd_c1,
-                    ages = ages, age_st = age_st, nages = nages,
-                    method = "BFGS")
-    fit_c2 <- optim(p0, nll_vb, obs_mean = mn_c2, obs_sd = sd_c2,
-                    ages = ages, age_st = age_st, nages = nages,
-                    method = "BFGS")
+``` r
 
-    pred_true <- w_bar
-    pred_c1   <- vb_weights(fit_c1$par, ages, age_st, nages)
-    pred_c2   <- vb_weights(fit_c2$par, ages, age_st, nages)
+Pi_to_df <- function(Pi, label) {
+  df <- as.data.frame(as.table(Pi))
+  colnames(df) <- c("true_age", "read_age", "prob")
+  df$true_age <- as.integer(as.character(df$true_age))
+  df$read_age <- as.integer(as.character(df$read_age))
+  df$scenario <- label
+  df
+}
 
-#### Figure 1 — Age-Reading Error Matrix
+df_Pi <- rbind(Pi_to_df(Pi_identity, "Case 1: No error (Π = I)"),
+               Pi_to_df(Pi_error,    "Case 2: σ_ae = 1.2, μ_ae = −1"))
 
-\`\`\`{r fig-arem} \#\| fig-width: 9 \#\| fig-height: 4 \#\| fig-cap:
-“Age-reading error matrices for the two simulation scenarios. Left:
+ggplot(df_Pi, aes(x = read_age, y = true_age, fill = prob)) +
+  geom_tile(colour = "grey80", linewidth = 0.3) +
+  geom_text(aes(label = ifelse(prob > 0.005,
+                               sprintf("%.2f", prob), "")),
+            size = 2.5, colour = "white") +
+  scale_fill_viridis_c(option = "plasma", name = "Pr(read | true)",
+                       limits = c(0, 1)) +
+  scale_x_continuous(breaks = ages) +
+  scale_y_continuous(breaks = ages) +
+  facet_wrap(~scenario) +
+  labs(x = "Read age", y = "True age") +
+  theme_bw(base_size = 11) +
+  theme(panel.grid = element_blank(),
+        legend.position = "right")
+```
+
+![Age-reading error matrices for the two simulation scenarios. Left:
 identity matrix (Case 1 — no error). Right: discrete-normal AREM with
 σ_ae = 1.2 yr and μ_ae = −1 yr (Case 2 — error + bias). Each cell shows
 the probability that a fish of true age (row) is assigned to read age
 (column). The off-diagonal mass and leftward shift of the mode are
-clearly visible.”
+clearly
+visible.](01-age-error-framework_files/figure-html/fig-arem-1.png)
 
-Pi_to_df \<- function(Pi, label) { df \<- as.data.frame(as.table(Pi))
-colnames(df) \<- c(“true_age”, “read_age”, “prob”)
-df$`true_age <- as.integer(as.character(df`$true_age))
-df$`read_age <- as.integer(as.character(df`$read_age)) df\$scenario \<-
-label df }
+Age-reading error matrices for the two simulation scenarios. Left:
+identity matrix (Case 1 — no error). Right: discrete-normal AREM with
+σ_ae = 1.2 yr and μ_ae = −1 yr (Case 2 — error + bias). Each cell shows
+the probability that a fish of true age (row) is assigned to read age
+(column). The off-diagonal mass and leftward shift of the mode are
+clearly visible.
 
-df_Pi \<- rbind(Pi_to_df(Pi_identity, “Case 1: No error (Π = I)”),
-Pi_to_df(Pi_error, “Case 2: σ_ae = 1.2, μ_ae = −1”))
+### Figure 2 — True vs Contaminated Mean Weight Profiles
 
-ggplot(df_Pi, aes(x = read_age, y = true_age, fill = prob)) +
-geom_tile(colour = “grey80”, linewidth = 0.3) + geom_text(aes(label =
-ifelse(prob \> 0.005, sprintf(“%.2f”, prob), ““)), size = 2.5, colour
-=”white”) + scale_fill_viridis_c(option = “plasma”, name = “Pr(read \|
-true)”, limits = c(0, 1)) + scale_x_continuous(breaks = ages) +
-scale_y_continuous(breaks = ages) + facet_wrap(~scenario) + labs(x =
-“Read age”, y = “True age”) + theme_bw(base_size = 11) +
-theme(panel.grid = element_blank(), legend.position = “right”)
+``` r
 
+df_prof <- data.frame(
+  age    = rep(ages, 3),
+  weight = c(pred_true, mn_c1, mn_c2),
+  se     = c(rep(0, nages), sd_c1, sd_c2),
+  label  = rep(c("True  w̄_a",
+                 "Case 1: observed (no error)",
+                 "Case 2: observed (error + bias)"),
+               each = nages)
+)
+df_prof$label <- factor(df_prof$label,
+                         levels = c("True  w̄_a",
+                                    "Case 1: observed (no error)",
+                                    "Case 2: observed (error + bias)"))
 
-    ### Figure 2 — True vs Contaminated Mean Weight Profiles
+cols <- c("True  w̄_a"                       = "black",
+          "Case 1: observed (no error)"       = "#2166ac",
+          "Case 2: observed (error + bias)"   = "#d6604d")
 
-    ```{r fig-profiles}
-    #| fig-width: 8
-    #| fig-height: 5
-    #| fig-cap: "Year-averaged weight-at-age. Black line: true mean weight w̄_a. Blue points/line: Case 1 observed means (Pi = I) — recover the truth within sampling noise. Red points/line: Case 2 contaminated means (σ_ae = 1.2, μ_ae = −1) — systematically elevated for younger ages and depressed for the oldest ages, reflecting mixing with heavier older fish and lighter younger fish respectively."
+ggplot(df_prof, aes(x = age, y = weight, colour = label, group = label)) +
+  geom_ribbon(aes(ymin = weight - 2 * se, ymax = weight + 2 * se,
+                  fill = label), alpha = 0.15, colour = NA) +
+  geom_line(linewidth = 1) +
+  geom_point(size = 2.5) +
+  scale_colour_manual(values = cols) +
+  scale_fill_manual(values = cols) +
+  scale_x_continuous(breaks = ages) +
+  labs(x = "Age", y = "Mean weight (kg)",
+       colour = NULL, fill = NULL) +
+  theme_bw(base_size = 12) +
+  theme(legend.position = "bottom")
+```
 
-    df_prof <- data.frame(
-      age    = rep(ages, 3),
-      weight = c(pred_true, mn_c1, mn_c2),
-      se     = c(rep(0, nages), sd_c1, sd_c2),
-      label  = rep(c("True  w̄_a",
-                     "Case 1: observed (no error)",
-                     "Case 2: observed (error + bias)"),
-                   each = nages)
-    )
-    df_prof$label <- factor(df_prof$label,
-                             levels = c("True  w̄_a",
-                                        "Case 1: observed (no error)",
-                                        "Case 2: observed (error + bias)"))
+![Year-averaged weight-at-age. Black line: true mean weight w̄\_a. Blue
+points/line: Case 1 observed means (Pi = I) — recover the truth within
+sampling noise. Red points/line: Case 2 contaminated means (σ_ae = 1.2,
+μ_ae = −1) — systematically elevated for younger ages and depressed for
+the oldest ages, reflecting mixing with heavier older fish and lighter
+younger fish
+respectively.](01-age-error-framework_files/figure-html/fig-profiles-1.png)
 
-    cols <- c("True  w̄_a"                       = "black",
-              "Case 1: observed (no error)"       = "#2166ac",
-              "Case 2: observed (error + bias)"   = "#d6604d")
+Year-averaged weight-at-age. Black line: true mean weight w̄\_a. Blue
+points/line: Case 1 observed means (Pi = I) — recover the truth within
+sampling noise. Red points/line: Case 2 contaminated means (σ_ae = 1.2,
+μ_ae = −1) — systematically elevated for younger ages and depressed for
+the oldest ages, reflecting mixing with heavier older fish and lighter
+younger fish respectively.
 
-    ggplot(df_prof, aes(x = age, y = weight, colour = label, group = label)) +
-      geom_ribbon(aes(ymin = weight - 2 * se, ymax = weight + 2 * se,
-                      fill = label), alpha = 0.15, colour = NA) +
-      geom_line(linewidth = 1) +
-      geom_point(size = 2.5) +
-      scale_colour_manual(values = cols) +
-      scale_fill_manual(values = cols) +
-      scale_x_continuous(breaks = ages) +
-      labs(x = "Age", y = "Mean weight (kg)",
-           colour = NULL, fill = NULL) +
-      theme_bw(base_size = 12) +
-      theme(legend.position = "bottom")
+### Figure 3 — Fitted Growth Curves vs Truth
 
-#### Figure 3 — Fitted Growth Curves vs Truth
+``` r
 
-\`\`\`{r fig-fits} \#\| fig-width: 8 \#\| fig-height: 5 \#\| fig-cap:
-“Naïve von Bertalanffy fits (lines) overlaid on the year-averaged
+df_fit <- data.frame(
+  age    = rep(ages, 3),
+  weight = c(pred_true, pred_c1, pred_c2),
+  label  = rep(c("True  w̄_a",
+                 "Case 1: VB fit (no error)",
+                 "Case 2: VB fit (error + bias)"),
+               each = nages)
+)
+df_fit$label <- factor(df_fit$label,
+                        levels = c("True  w̄_a",
+                                   "Case 1: VB fit (no error)",
+                                   "Case 2: VB fit (error + bias)"))
+
+df_pts <- data.frame(
+  age    = rep(ages, 2),
+  weight = c(mn_c1, mn_c2),
+  se     = c(sd_c1, sd_c2),
+  label  = rep(c("Case 1: VB fit (no error)",
+                 "Case 2: VB fit (error + bias)"), each = nages)
+)
+
+cols2 <- c("True  w̄_a"                      = "black",
+           "Case 1: VB fit (no error)"        = "#2166ac",
+           "Case 2: VB fit (error + bias)"    = "#d6604d")
+
+ggplot() +
+  geom_errorbar(data = df_pts,
+                aes(x = age, ymin = weight - 2 * se, ymax = weight + 2 * se,
+                    colour = label), width = 0.3, alpha = 0.6) +
+  geom_point(data = df_pts, aes(x = age, y = weight, colour = label),
+             size = 2.5) +
+  geom_line(data = df_fit,  aes(x = age, y = weight, colour = label,
+                                linetype = label), linewidth = 1.1) +
+  scale_colour_manual(values = cols2) +
+  scale_linetype_manual(values = c("True  w̄_a" = "dashed",
+                                   "Case 1: VB fit (no error)"     = "solid",
+                                   "Case 2: VB fit (error + bias)" = "solid")) +
+  scale_x_continuous(breaks = ages) +
+  labs(x = "Age", y = "Mean weight (kg)",
+       colour = NULL, linetype = NULL) +
+  theme_bw(base_size = 12) +
+  theme(legend.position = "bottom")
+```
+
+![Naïve von Bertalanffy fits (lines) overlaid on the year-averaged
 observations (points ± 2 SE). The Case 1 fit closely tracks the true
 curve. The Case 2 fit is pulled toward the contaminated data, yielding
 incorrect growth parameter estimates — the curve is too steep at young
-ages and reaches asymptote too quickly.”
+ages and reaches asymptote too
+quickly.](01-age-error-framework_files/figure-html/fig-fits-1.png)
 
-df_fit \<- data.frame( age = rep(ages, 3), weight = c(pred_true,
-pred_c1, pred_c2), label = rep(c(“True w̄\_a”, “Case 1: VB fit (no
-error)”, “Case 2: VB fit (error + bias)”), each = nages) )
-df_fit$`label <- factor(df_fit`$label, levels = c(“True w̄\_a”, “Case 1:
-VB fit (no error)”, “Case 2: VB fit (error + bias)”))
+Naïve von Bertalanffy fits (lines) overlaid on the year-averaged
+observations (points ± 2 SE). The Case 1 fit closely tracks the true
+curve. The Case 2 fit is pulled toward the contaminated data, yielding
+incorrect growth parameter estimates — the curve is too steep at young
+ages and reaches asymptote too quickly.
 
-df_pts \<- data.frame( age = rep(ages, 2), weight = c(mn_c1, mn_c2), se
-= c(sd_c1, sd_c2), label = rep(c(“Case 1: VB fit (no error)”, “Case 2:
-VB fit (error + bias)”), each = nages) )
+### Figure 4 — Absolute and Relative Bias by Age
 
-cols2 \<- c(“True w̄\_a” = “black”, “Case 1: VB fit (no error)” =
-“#2166ac”, “Case 2: VB fit (error + bias)” = “#d6604d”)
+``` r
 
-ggplot() + geom_errorbar(data = df_pts, aes(x = age, ymin = weight - 2
-\* se, ymax = weight + 2 \* se, colour = label), width = 0.3, alpha =
-0.6) + geom_point(data = df_pts, aes(x = age, y = weight, colour =
-label), size = 2.5) + geom_line(data = df_fit, aes(x = age, y = weight,
-colour = label, linetype = label), linewidth = 1.1) +
-scale_colour_manual(values = cols2) + scale_linetype_manual(values =
-c(“True w̄\_a” = “dashed”, “Case 1: VB fit (no error)” = “solid”, “Case
-2: VB fit (error + bias)” = “solid”)) + scale_x_continuous(breaks =
-ages) + labs(x = “Age”, y = “Mean weight (kg)”, colour = NULL, linetype
-= NULL) + theme_bw(base_size = 12) + theme(legend.position = “bottom”)
+bias_abs <- mn_c2 - pred_true
+bias_rel <- 100 * bias_abs / pred_true
 
+df_bias <- data.frame(
+  age      = ages,
+  abs_bias = bias_abs,
+  rel_bias = bias_rel
+)
 
-    ### Figure 4 — Absolute and Relative Bias by Age
+p_abs <- ggplot(df_bias, aes(x = age, y = abs_bias,
+                              fill = ifelse(abs_bias > 0, "pos", "neg"))) +
+  geom_col(width = 0.7, colour = "grey40") +
+  geom_hline(yintercept = 0, linewidth = 0.4) +
+  scale_fill_manual(values = c(pos = "#d6604d", neg = "#4393c3"),
+                    guide = "none") +
+  scale_x_continuous(breaks = ages) +
+  labs(x = "Age", y = "Bias (kg)",
+       title = "Absolute weight bias") +
+  theme_bw(base_size = 11)
 
-    ```{r fig-bias}
-    #| fig-width: 9
-    #| fig-height: 4
-    #| fig-cap: "Absolute bias (left) and relative bias as a percentage (right) introduced by age-reading error and systematic underestimation of age (μ_ae = −1 yr). Bias peaks at intermediate ages where growth increments Δ_a are largest. At the oldest age the mixture effect reverses sign because there are no older fish to draw from — the truncation of the AREM at age 11 pulls old-age weights slightly downward."
+p_rel <- ggplot(df_bias, aes(x = age, y = rel_bias,
+                              fill = ifelse(rel_bias > 0, "pos", "neg"))) +
+  geom_col(width = 0.7, colour = "grey40") +
+  geom_hline(yintercept = 0, linewidth = 0.4) +
+  scale_fill_manual(values = c(pos = "#d6604d", neg = "#4393c3"),
+                    guide = "none") +
+  scale_x_continuous(breaks = ages) +
+  labs(x = "Age", y = "Relative bias (%)",
+       title = "Relative weight bias") +
+  theme_bw(base_size = 11)
 
-    bias_abs <- mn_c2 - pred_true
-    bias_rel <- 100 * bias_abs / pred_true
+p_abs + p_rel
+```
 
-    df_bias <- data.frame(
-      age      = ages,
-      abs_bias = bias_abs,
-      rel_bias = bias_rel
-    )
+![Absolute bias (left) and relative bias as a percentage (right)
+introduced by age-reading error and systematic underestimation of age
+(μ_ae = −1 yr). Bias peaks at intermediate ages where growth increments
+Δ_a are largest. At the oldest age the mixture effect reverses sign
+because there are no older fish to draw from — the truncation of the
+AREM at age 11 pulls old-age weights slightly
+downward.](01-age-error-framework_files/figure-html/fig-bias-1.png)
 
-    p_abs <- ggplot(df_bias, aes(x = age, y = abs_bias,
-                                  fill = ifelse(abs_bias > 0, "pos", "neg"))) +
-      geom_col(width = 0.7, colour = "grey40") +
-      geom_hline(yintercept = 0, linewidth = 0.4) +
-      scale_fill_manual(values = c(pos = "#d6604d", neg = "#4393c3"),
-                        guide = "none") +
-      scale_x_continuous(breaks = ages) +
-      labs(x = "Age", y = "Bias (kg)",
-           title = "Absolute weight bias") +
-      theme_bw(base_size = 11)
+Absolute bias (left) and relative bias as a percentage (right)
+introduced by age-reading error and systematic underestimation of age
+(μ_ae = −1 yr). Bias peaks at intermediate ages where growth increments
+Δ_a are largest. At the oldest age the mixture effect reverses sign
+because there are no older fish to draw from — the truncation of the
+AREM at age 11 pulls old-age weights slightly downward.
 
-    p_rel <- ggplot(df_bias, aes(x = age, y = rel_bias,
-                                  fill = ifelse(rel_bias > 0, "pos", "neg"))) +
-      geom_col(width = 0.7, colour = "grey40") +
-      geom_hline(yintercept = 0, linewidth = 0.4) +
-      scale_fill_manual(values = c(pos = "#d6604d", neg = "#4393c3"),
-                        guide = "none") +
-      scale_x_continuous(breaks = ages) +
-      labs(x = "Age", y = "Relative bias (%)",
-           title = "Relative weight bias") +
-      theme_bw(base_size = 11)
+### Figure 5 — Year-by-Year Weight Trajectories at Selected Ages
 
-    p_abs + p_rel
+``` r
 
-#### Figure 5 — Year-by-Year Weight Trajectories at Selected Ages
+sel_ages <- c(3, 5, 8, 11)
+idx      <- match(sel_ages, ages)
 
-\`\`\`{r fig-trajectories} \#\| fig-width: 10 \#\| fig-height: 6 \#\|
-fig-cap: “Annual weight trajectories at four representative ages (3, 5,
-8, 11) for the true process (black), Case 1 observations (blue), and
-Case 2 contaminated observations (red). Case 1 tracks truth within
-observation noise. Case 2 is persistently biased — the magnitude of the
-shift matches the static bias shown in Figure 4, demonstrating that
+df_traj <- do.call(rbind, lapply(seq_along(sel_ages), function(k) {
+  a  <- sel_ages[k]
+  ia <- idx[k]
+  data.frame(
+    year    = rep(years, 3),
+    weight  = c(wt_true[, ia], wt_obs_c1[, ia], wt_obs_c2[, ia]),
+    label   = rep(c("True", "Case 1 (no error)", "Case 2 (error + bias)"),
+                  each = nyrs),
+    age_lab = paste0("Age ", a)
+  )
+}))
+df_traj$label   <- factor(df_traj$label,
+                            levels = c("True",
+                                       "Case 1 (no error)",
+                                       "Case 2 (error + bias)"))
+df_traj$age_lab <- factor(df_traj$age_lab,
+                           levels = paste0("Age ", sel_ages))
+
+cols3 <- c("True"                   = "black",
+           "Case 1 (no error)"      = "#2166ac",
+           "Case 2 (error + bias)"  = "#d6604d")
+
+ggplot(df_traj, aes(x = year, y = weight,
+                     colour = label, group = label)) +
+  geom_line(linewidth = 0.7, alpha = 0.85) +
+  facet_wrap(~age_lab, scales = "free_y", nrow = 2) +
+  scale_colour_manual(values = cols3) +
+  labs(x = "Year", y = "Weight (kg)", colour = NULL) +
+  theme_bw(base_size = 11) +
+  theme(legend.position = "bottom",
+        strip.background = element_rect(fill = "grey92"))
+```
+
+![Annual weight trajectories at four representative ages (3, 5, 8, 11)
+for the true process (black), Case 1 observations (blue), and Case 2
+contaminated observations (red). Case 1 tracks truth within observation
+noise. Case 2 is persistently biased — the magnitude of the shift
+matches the static bias shown in Figure 4, demonstrating that
 age-reading error induces a systematic, year-invariant offset rather
-than additional random noise.”
+than additional random
+noise.](01-age-error-framework_files/figure-html/fig-trajectories-1.png)
 
-sel_ages \<- c(3, 5, 8, 11) idx \<- match(sel_ages, ages)
+Annual weight trajectories at four representative ages (3, 5, 8, 11) for
+the true process (black), Case 1 observations (blue), and Case 2
+contaminated observations (red). Case 1 tracks truth within observation
+noise. Case 2 is persistently biased — the magnitude of the shift
+matches the static bias shown in Figure 4, demonstrating that
+age-reading error induces a systematic, year-invariant offset rather
+than additional random noise.
 
-df_traj \<- do.call(rbind, lapply(seq_along(sel_ages), function(k) { a
-\<- sel_ages\[k\] ia \<- idx\[k\] data.frame( year = rep(years, 3),
-weight = c(wt_true\[, ia\], wt_obs_c1\[, ia\], wt_obs_c2\[, ia\]), label
-= rep(c(“True”, “Case 1 (no error)”, “Case 2 (error + bias)”), each =
-nyrs), age_lab = paste0(“Age”, a) ) }))
-df_traj$`label   <- factor(df_traj`$label, levels = c(“True”, “Case 1
-(no error)”, “Case 2 (error + bias)”))
-df_traj$`age_lab <- factor(df_traj`$age_lab, levels = paste0(“Age”,
-sel_ages))
+### Parameter Recovery Summary
 
-cols3 \<- c(“True” = “black”, “Case 1 (no error)” = “#2166ac”, “Case 2
-(error + bias)” = “#d6604d”)
+``` r
 
-ggplot(df_traj, aes(x = year, y = weight, colour = label, group =
-label)) + geom_line(linewidth = 0.7, alpha = 0.85) +
-facet_wrap(~age_lab, scales = “free_y”, nrow = 2) +
-scale_colour_manual(values = cols3) + labs(x = “Year”, y = “Weight
-(kg)”, colour = NULL) + theme_bw(base_size = 11) + theme(legend.position
-= “bottom”, strip.background = element_rect(fill = “grey92”))
+# Extract on natural scale
+extract_pars <- function(par) {
+  c(L1    = exp(par[1]),
+    L2    = exp(par[2]),
+    K     = plogis(par[3]),
+    alpha = exp(par[4]))
+}
 
+tab <- rbind(True    = c(L1 = L1, L2 = L2, K = K, alpha = alpha),
+             "Case 1" = extract_pars(fit_c1$par),
+             "Case 2" = extract_pars(fit_c2$par))
 
-    ### Parameter Recovery Summary
+knitr::kable(round(tab, 5),
+             col.names = c("L₁ (cm)", "L₂ (cm)", "K", "α"),
+             caption = NULL)
+```
 
-    ```{r param-table}
-    #| tbl-cap: "Recovered von Bertalanffy parameters from naïve fits to year-averaged observations. The Case 2 estimates deviate from the true values, demonstrating that ignoring age-reading error leads to biased growth parameter estimation."
+|        |  L₁ (cm) |  L₂ (cm) |       K |     α |
+|:-------|---------:|---------:|--------:|------:|
+| True   | 27.00000 | 46.00000 | 0.87810 | 2e-05 |
+| Case 1 | 24.91770 | 44.88499 | 0.85522 | 2e-05 |
+| Case 2 | 26.57694 | 29.10060 | 0.00013 | 4e-05 |
 
-    # Extract on natural scale
-    extract_pars <- function(par) {
-      c(L1    = exp(par[1]),
-        L2    = exp(par[2]),
-        K     = plogis(par[3]),
-        alpha = exp(par[4]))
-    }
-
-    tab <- rbind(True    = c(L1 = L1, L2 = L2, K = K, alpha = alpha),
-                 "Case 1" = extract_pars(fit_c1$par),
-                 "Case 2" = extract_pars(fit_c2$par))
-
-    knitr::kable(round(tab, 5),
-                 col.names = c("L₁ (cm)", "L₂ (cm)", "K", "α"),
-                 caption = NULL)
-
-#### Interpretation
+### Interpretation
 
 The simulation makes three points concrete:
 
@@ -752,7 +866,7 @@ assessment inputs.
 
 ------------------------------------------------------------------------
 
-### Next Steps
+## Next Steps
 
 This document establishes the theoretical framework. Concrete next steps
 for implementation include:

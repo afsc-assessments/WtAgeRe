@@ -4,7 +4,7 @@ pkgdown_sha: ~
 articles:
   00-ebspollock-example: 00-ebspollock-example.html
   01-age-error-framework: 01-age-error-framework.html
-last_built: 2026-02-19T05:06Z
+last_built: 2026-02-19T05:12Z
 urls:
   reference: https://afsc-assessments.github.io/WtAgeRe/reference
   article: https://afsc-assessments.github.io/WtAgeRe/articles

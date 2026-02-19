@@ -58,6 +58,10 @@
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Accounting for Age Uncertainty in Weights-at-Age Estimation</h1>
+            <h3 data-toc-skip class="subtitle">Mathematical Framework
+for the <code>wt.tpl</code> ADMB Model</h3>
+                        <h4 data-toc-skip class="author">Preliminary
+Technical Document</h4>
             
       
 
@@ -66,9 +70,9 @@
 
     
     
-<div class="section level3">
-<h3 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
-</h3>
+<div class="section level2">
+<h2 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
+</h2>
 <p>The <code>wt.tpl</code> ADMB program estimates mean weights-at-age
 using a mixed-effects growth model with cohort and year random effects.
 In its current form, the model assumes that the <strong>observed age of
@@ -85,12 +89,12 @@ baseline model structure, (2) an age-reading error model, (3) the
 induced likelihood, and (4) bias-correction approaches.</p>
 <hr>
 </div>
+<div class="section level2">
+<h2 id="sec-baseline">Baseline Model (Ages Assumed Known)<a class="anchor" aria-label="anchor" href="#sec-baseline"></a>
+</h2>
 <div class="section level3">
-<h3 id="sec-baseline">Baseline Model (Ages Assumed Known)<a class="anchor" aria-label="anchor" href="#sec-baseline"></a>
+<h3 id="mean-weight-at-age">Mean Weight-at-Age<a class="anchor" aria-label="anchor" href="#mean-weight-at-age"></a>
 </h3>
-<div class="section level4">
-<h4 id="mean-weight-at-age">Mean Weight-at-Age<a class="anchor" aria-label="anchor" href="#mean-weight-at-age"></a>
-</h4>
 <p>The deterministic backbone of <code>wt.tpl</code> is a discrete,
 three-parameter von Bertalanffy weight function. Letting
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mover><mi>w</mi><mo accent="true">‾</mo></mover><mi>a</mi></msub><annotation encoding="application/x-tex">\bar{w}_a</annotation></semantics></math>
@@ -121,9 +125,9 @@ is:</p>
 \Delta_a = \bar{w}_{a+1} - \bar{w}_a, \qquad a = a_1, \ldots, a_A - 1.
 </annotation></semantics></math></p>
 </div>
-<div class="section level4">
-<h4 id="dynamic-weight-predictions-with-random-effects">Dynamic Weight Predictions with Random Effects<a class="anchor" aria-label="anchor" href="#dynamic-weight-predictions-with-random-effects"></a>
-</h4>
+<div class="section level3">
+<h3 id="dynamic-weight-predictions-with-random-effects">Dynamic Weight Predictions with Random Effects<a class="anchor" aria-label="anchor" href="#dynamic-weight-predictions-with-random-effects"></a>
+</h3>
 <p>Let
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mover><mi>w</mi><mo accent="true">̂</mo></mover><mrow><mi>y</mi><mo>,</mo><mi>a</mi></mrow></msub><annotation encoding="application/x-tex">\hat{w}_{y,a}</annotation></semantics></math>
 denote the model-predicted weight in year
@@ -164,9 +168,9 @@ bias correction) ensures that
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝔼</mi><mo stretchy="false" form="prefix">[</mo><msub><mover><mi>w</mi><mo accent="true">̂</mo></mover><mrow><mi>y</mi><mo>,</mo><mi>a</mi></mrow></msub><mo stretchy="false" form="postfix">]</mo><mo>=</mo><msub><mover><mi>w</mi><mo accent="true">‾</mo></mover><mi>a</mi></msub></mrow><annotation encoding="application/x-tex">\mathbb{E}[\hat{w}_{y,a}] = \bar{w}_a</annotation></semantics></math>
 on average.</p>
 </div>
-<div class="section level4">
-<h4 id="observation-model-and-likelihood">Observation Model and Likelihood<a class="anchor" aria-label="anchor" href="#observation-model-and-likelihood"></a>
-</h4>
+<div class="section level3">
+<h3 id="observation-model-and-likelihood">Observation Model and Likelihood<a class="anchor" aria-label="anchor" href="#observation-model-and-likelihood"></a>
+</h3>
 <p>Observed mean weights
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mi>w</mi><mrow><mi>h</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>a</mi></mrow><mrow><mi mathvariant="normal">o</mi><mi mathvariant="normal">b</mi><mi mathvariant="normal">s</mi></mrow></msubsup><annotation encoding="application/x-tex">w^{\mathrm{obs}}_{h,y,a}</annotation></semantics></math>
 in dataset
@@ -194,14 +198,14 @@ via the Laplace approximation) is:</p>
 <hr>
 </div>
 </div>
-<div class="section level3">
-<h3 id="sources-of-age-uncertainty">Sources of Age Uncertainty<a class="anchor" aria-label="anchor" href="#sources-of-age-uncertainty"></a>
-</h3>
+<div class="section level2">
+<h2 id="sources-of-age-uncertainty">Sources of Age Uncertainty<a class="anchor" aria-label="anchor" href="#sources-of-age-uncertainty"></a>
+</h2>
 <p>Age uncertainty enters the model through at least two distinct
 mechanisms.</p>
-<div class="section level4">
-<h4 id="age-reading-error">Age-Reading Error<a class="anchor" aria-label="anchor" href="#age-reading-error"></a>
-</h4>
+<div class="section level3">
+<h3 id="age-reading-error">Age-Reading Error<a class="anchor" aria-label="anchor" href="#age-reading-error"></a>
+</h3>
 <p>Otolith-based age determination is imperfect. A fish of <strong>true
 age</strong>
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>a</mi><mo>*</mo></msup><annotation encoding="application/x-tex">a^*</annotation></semantics></math>
@@ -240,9 +244,9 @@ characterizes <strong>imprecision</strong> in age reading; systematic
 is the mean misclassification bias (negative = ages are systematically
 underestimated, positive = overestimated).</p>
 </div>
-<div class="section level4">
-<h4 id="age-subsampling-missing-ages">Age Subsampling / Missing Ages<a class="anchor" aria-label="anchor" href="#age-subsampling-missing-ages"></a>
-</h4>
+<div class="section level3">
+<h3 id="age-subsampling-missing-ages">Age Subsampling / Missing Ages<a class="anchor" aria-label="anchor" href="#age-subsampling-missing-ages"></a>
+</h3>
 <p>In years where no age readings are collected, the age composition of
 the weight sample is unknown. The true age distribution must then be
 reconstructed from an <strong>age-length key</strong> or from temporal
@@ -250,9 +254,9 @@ smoothing, adding a second layer of uncertainty.</p>
 <hr>
 </div>
 </div>
-<div class="section level3">
-<h3 id="contaminated-observed-weights">Contaminated Observed Weights<a class="anchor" aria-label="anchor" href="#contaminated-observed-weights"></a>
-</h3>
+<div class="section level2">
+<h2 id="contaminated-observed-weights">Contaminated Observed Weights<a class="anchor" aria-label="anchor" href="#contaminated-observed-weights"></a>
+</h2>
 <p>When age-reading error is present, what is actually observed in year
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>y</mi><annotation encoding="application/x-tex">y</annotation></semantics></math>
 at <strong>read age</strong>
@@ -286,12 +290,12 @@ then the vector of contaminated predicted weights is:</p>
 </annotation></semantics></math></p>
 <hr>
 </div>
+<div class="section level2">
+<h2 id="extended-likelihood-accounting-for-age-error">Extended Likelihood Accounting for Age Error<a class="anchor" aria-label="anchor" href="#extended-likelihood-accounting-for-age-error"></a>
+</h2>
 <div class="section level3">
-<h3 id="extended-likelihood-accounting-for-age-error">Extended Likelihood Accounting for Age Error<a class="anchor" aria-label="anchor" href="#extended-likelihood-accounting-for-age-error"></a>
+<h3 id="likelihood-conditional-on-true-age-assignments">Likelihood Conditional on True Age Assignments<a class="anchor" aria-label="anchor" href="#likelihood-conditional-on-true-age-assignments"></a>
 </h3>
-<div class="section level4">
-<h4 id="likelihood-conditional-on-true-age-assignments">Likelihood Conditional on True Age Assignments<a class="anchor" aria-label="anchor" href="#likelihood-conditional-on-true-age-assignments"></a>
-</h4>
 <p>Suppose that in year
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>y</mi><annotation encoding="application/x-tex">y</annotation></semantics></math>
 and read-age class
@@ -331,9 +335,9 @@ second term is <strong>age-confusion variance</strong> arising from the
 spread of true ages that map to read age
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>a</mi><annotation encoding="application/x-tex">a</annotation></semantics></math>.</p>
 </div>
-<div class="section level4">
-<h4 id="modified-observation-equation">Modified Observation Equation<a class="anchor" aria-label="anchor" href="#modified-observation-equation"></a>
-</h4>
+<div class="section level3">
+<h3 id="modified-observation-equation">Modified Observation Equation<a class="anchor" aria-label="anchor" href="#modified-observation-equation"></a>
+</h3>
 <p>The updated negative log-likelihood, replacing
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mover><mi>w</mi><mo accent="true">̂</mo></mover><mrow><mi>y</mi><mo>,</mo><mi>a</mi></mrow></msub><annotation encoding="application/x-tex">\hat{w}_{y,a}</annotation></semantics></math>
 with
@@ -352,9 +356,9 @@ controls the magnitude of the age-confusion contribution and may itself
 be estimated or fixed based on external information about age-reading
 precision.</p>
 </div>
-<div class="section level4">
-<h4 id="marginal-likelihood-over-uncertain-true-ages">Marginal Likelihood over Uncertain True Ages<a class="anchor" aria-label="anchor" href="#marginal-likelihood-over-uncertain-true-ages"></a>
-</h4>
+<div class="section level3">
+<h3 id="marginal-likelihood-over-uncertain-true-ages">Marginal Likelihood over Uncertain True Ages<a class="anchor" aria-label="anchor" href="#marginal-likelihood-over-uncertain-true-ages"></a>
+</h3>
 <p>A more formal treatment marginalizes over unknown true ages. Define
 the probability that a fish weighed at read age
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>a</mi><annotation encoding="application/x-tex">a</annotation></semantics></math>
@@ -397,9 +401,9 @@ as a mixture component weighted by its posterior probability
 <hr>
 </div>
 </div>
-<div class="section level3">
-<h3 id="bias-characterization">Bias Characterization<a class="anchor" aria-label="anchor" href="#bias-characterization"></a>
-</h3>
+<div class="section level2">
+<h2 id="bias-characterization">Bias Characterization<a class="anchor" aria-label="anchor" href="#bias-characterization"></a>
+</h2>
 <p>Let
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mover><mi>a</mi><mo accent="true">‾</mo></mover><mo>*</mo></msup><annotation encoding="application/x-tex">\bar{a}^*</annotation></semantics></math>
 be the mean true age of fish sampled at read age
@@ -435,9 +439,9 @@ is approximately:</p>
 (using the growth increment defined in <span class="citation">@sec-baseline</span>). This first-order approximation
 shows that age bias causes weight bias proportional to the growth rate
 at that age; the effect is largest for young, fast-growing fish.</p>
-<div class="section level4">
-<h4 id="why-true-to-observed-ages-can-look-biased">Why True-to-Observed Ages Can Look Biased<a class="anchor" aria-label="anchor" href="#why-true-to-observed-ages-can-look-biased"></a>
-</h4>
+<div class="section level3">
+<h3 id="why-true-to-observed-ages-can-look-biased">Why True-to-Observed Ages Can Look Biased<a class="anchor" aria-label="anchor" href="#why-true-to-observed-ages-can-look-biased"></a>
+</h3>
 <p>Even when the forward age-reading matrix
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝚷</mi><annotation encoding="application/x-tex">\boldsymbol{\Pi}</annotation></semantics></math>
 is only weakly biased, the <strong>inverse mapping</strong> from read
@@ -469,9 +473,9 @@ the raw AREM.</p>
 <hr>
 </div>
 </div>
-<div class="section level3">
-<h3 id="year-specific-age-error-effects">Year-Specific Age-Error Effects<a class="anchor" aria-label="anchor" href="#year-specific-age-error-effects"></a>
-</h3>
+<div class="section level2">
+<h2 id="year-specific-age-error-effects">Year-Specific Age-Error Effects<a class="anchor" aria-label="anchor" href="#year-specific-age-error-effects"></a>
+</h2>
 <p>In many stock assessments, age uncertainty varies among years: some
 years may have high-quality age data from dedicated otolith programs,
 while others rely on age-length keys or have no age data at all. The
@@ -495,9 +499,9 @@ those year–age observations from the likelihood and rely on the random
 effects to borrow strength across years.</p>
 <hr>
 </div>
-<div class="section level3">
-<h3 id="parameterization-strategy-for-admb-implementation">Parameterization Strategy for ADMB Implementation<a class="anchor" aria-label="anchor" href="#parameterization-strategy-for-admb-implementation"></a>
-</h3>
+<div class="section level2">
+<h2 id="parameterization-strategy-for-admb-implementation">Parameterization Strategy for ADMB Implementation<a class="anchor" aria-label="anchor" href="#parameterization-strategy-for-admb-implementation"></a>
+</h2>
 <p>The following additional parameters would be required in the extended
 <code>wt.tpl</code>:</p>
 <table class="table">
@@ -547,9 +551,9 @@ modification to the ADMB code is confined to replacing
 <code>wt_hat_tilde</code> and inflating the variance accordingly.</p>
 <hr>
 </div>
-<div class="section level3">
-<h3 id="summary-of-required-modifications-to-wt-tpl">Summary of Required Modifications to <code>wt.tpl</code><a class="anchor" aria-label="anchor" href="#summary-of-required-modifications-to-wt-tpl"></a>
-</h3>
+<div class="section level2">
+<h2 id="summary-of-required-modifications-to-wt-tpl">Summary of Required Modifications to <code>wt.tpl</code><a class="anchor" aria-label="anchor" href="#summary-of-required-modifications-to-wt-tpl"></a>
+</h2>
 <p>The table below maps each mathematical object introduced above to a
 corresponding change in the ADMB template:</p>
 <table class="table">
@@ -604,9 +608,9 @@ corresponding change in the ADMB template:</p>
 </table>
 <hr>
 </div>
-<div class="section level3">
-<h3 id="simulation-comparing-known-age-vs-age-error-scenarios">Simulation: Comparing Known-Age vs Age-Error Scenarios<a class="anchor" aria-label="anchor" href="#simulation-comparing-known-age-vs-age-error-scenarios"></a>
-</h3>
+<div class="section level2">
+<h2 id="simulation-comparing-known-age-vs-age-error-scenarios">Simulation: Comparing Known-Age vs Age-Error Scenarios<a class="anchor" aria-label="anchor" href="#simulation-comparing-known-age-vs-age-error-scenarios"></a>
+</h2>
 <p>The following R simulation uses parameters drawn from
 <code>wt.tpl</code> (Atka mackerel configuration, ages 2–11) to
 demonstrate the practical consequences of age uncertainty. Two scenarios
@@ -626,362 +630,459 @@ year (systematic underestimation). Contaminated weights are
 systematically distorted, and a naïve fit misleads parameter
 estimation.</li>
 </ul>
-<div class="section level4">
-<h4 id="setup-growth-model-and-parameters">Setup: Growth Model and Parameters<a class="anchor" aria-label="anchor" href="#setup-growth-model-and-parameters"></a>
-</h4>
-<p>```{r setup} #| message: false #| warning: false library(ggplot2)
-library(patchwork) # for combining panels; install if needed</p>
+<div class="section level3">
+<h3 id="setup-growth-model-and-parameters">Setup: Growth Model and Parameters<a class="anchor" aria-label="anchor" href="#setup-growth-model-and-parameters"></a>
+</h3>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://patchwork.data-imaginist.com" class="external-link">patchwork</a></span><span class="op">)</span>   <span class="co"># for combining panels; install if needed</span></span>
+<span></span>
+<span><span class="co"># ── Growth parameters (from wt.tpl initialization) ───────────────────────────</span></span>
+<span><span class="va">L1</span>      <span class="op">&lt;-</span> <span class="fl">27.0</span>          <span class="co"># mean length at youngest age (cm)</span></span>
+<span><span class="va">L2</span>      <span class="op">&lt;-</span> <span class="fl">46.0</span>          <span class="co"># mean length at oldest age (cm)</span></span>
+<span><span class="va">K</span>       <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="op">-</span><span class="fl">0.13</span><span class="op">)</span>    <span class="co"># Brody growth coefficient</span></span>
+<span><span class="va">alpha</span>   <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="op">-</span><span class="fl">11.0</span><span class="op">)</span>    <span class="co"># length-weight scalar (gives weights in kg)</span></span>
+<span></span>
+<span><span class="co"># ── Age and year ranges ───────────────────────────────────────────────────────</span></span>
+<span><span class="va">age_st</span>  <span class="op">&lt;-</span> <span class="fl">2L</span></span>
+<span><span class="va">age_end</span> <span class="op">&lt;-</span> <span class="fl">11L</span></span>
+<span><span class="va">ages</span>    <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="va">age_st</span>, <span class="va">age_end</span><span class="op">)</span></span>
+<span><span class="va">nages</span>   <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">ages</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">styr</span>    <span class="op">&lt;-</span> <span class="fl">1980L</span></span>
+<span><span class="va">endyr</span>   <span class="op">&lt;-</span> <span class="fl">2022L</span></span>
+<span><span class="va">years</span>   <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="va">styr</span>, <span class="va">endyr</span><span class="op">)</span></span>
+<span><span class="va">nyrs</span>    <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">years</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># ── Random-effects standard deviations ───────────────────────────────────────</span></span>
+<span><span class="va">sigma_coh</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1.8</span><span class="op">)</span>   <span class="co"># cohort SD</span></span>
+<span><span class="va">sigma_yr</span>  <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="op">-</span><span class="fl">0.82</span><span class="op">)</span>  <span class="co"># year SD</span></span>
+<span></span>
+<span><span class="co"># ── Observation noise (CV ~ 10%) ─────────────────────────────────────────────</span></span>
+<span><span class="va">obs_cv</span> <span class="op">&lt;-</span> <span class="fl">0.10</span></span>
+<span></span>
+<span><span class="co"># ── Age-reading error parameters (Case 2) ────────────────────────────────────</span></span>
+<span><span class="va">sigma_ae</span> <span class="op">&lt;-</span> <span class="fl">1.2</span>    <span class="co"># imprecision: ~1.2-year SD in read ages</span></span>
+<span><span class="va">mu_ae</span>    <span class="op">&lt;-</span> <span class="op">-</span><span class="fl">1.0</span>   <span class="co"># bias: ages systematically underestimated by ~1 year</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">2024</span><span class="op">)</span></span></code></pre></div>
 </div>
+<div class="section level3">
+<h3 id="mean-weight-at-age-and-growth-increments">Mean Weight-at-Age and Growth Increments<a class="anchor" aria-label="anchor" href="#mean-weight-at-age-and-growth-increments"></a>
+</h3>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Discrete von Bertalanffy mean length then mean weight</span></span>
+<span><span class="va">L_bar</span> <span class="op">&lt;-</span> <span class="va">L1</span> <span class="op">+</span> <span class="op">(</span><span class="va">L2</span> <span class="op">-</span> <span class="va">L1</span><span class="op">)</span> <span class="op">*</span> <span class="op">(</span><span class="fl">1</span> <span class="op">-</span> <span class="va">K</span><span class="op">^</span><span class="op">(</span><span class="va">ages</span> <span class="op">-</span> <span class="va">age_st</span><span class="op">)</span><span class="op">)</span> <span class="op">/</span> <span class="op">(</span><span class="fl">1</span> <span class="op">-</span> <span class="va">K</span><span class="op">^</span><span class="op">(</span><span class="va">nages</span> <span class="op">-</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">w_bar</span> <span class="op">&lt;-</span> <span class="va">alpha</span> <span class="op">*</span> <span class="va">L_bar</span><span class="op">^</span><span class="fl">3</span>          <span class="co"># mean weight at age (kg)</span></span>
+<span><span class="va">wt_inc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/diff.html" class="external-link">diff</a></span><span class="op">(</span><span class="va">w_bar</span><span class="op">)</span>             <span class="co"># Δ_a = w_bar[a+1] - w_bar[a]</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">w_bar</span><span class="op">)</span>  <span class="op">&lt;-</span> <span class="va">ages</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">wt_inc</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">ages</span><span class="op">[</span><span class="op">-</span><span class="va">nages</span><span class="op">]</span></span></code></pre></div>
 </div>
-<div class="section level2">
-<h2 id="growth-parameters-from-wt-tpl-initialization">── Growth parameters (from wt.tpl initialization)
-───────────────────────────<a class="anchor" aria-label="anchor" href="#growth-parameters-from-wt-tpl-initialization"></a>
-</h2>
-<p>L1 &lt;- 27.0 # mean length at youngest age (cm) L2 &lt;- 46.0 # mean
-length at oldest age (cm) K &lt;- exp(-0.13) # Brody growth coefficient
-alpha &lt;- exp(-11.0) # length-weight scalar (gives weights in kg)</p>
+<div class="section level3">
+<h3 id="simulate-true-weight-trajectories-with-random-effects">Simulate True Weight Trajectories (with Random Effects)<a class="anchor" aria-label="anchor" href="#simulate-true-weight-trajectories-with-random-effects"></a>
+</h3>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Draw random effects (unit normal, same convention as wt.tpl)</span></span>
+<span><span class="va">coh_eff</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">nyrs</span><span class="op">)</span></span>
+<span><span class="va">yr_eff</span>  <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">nyrs</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># wt_true[year index, age index]</span></span>
+<span><span class="va">wt_true</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="cn">NA_real_</span>, nrow <span class="op">=</span> <span class="va">nyrs</span>, ncol <span class="op">=</span> <span class="va">nages</span>,</span>
+<span>                  dimnames <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">years</span>, <span class="va">ages</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># First year: mean weights (no random effects to propagate)</span></span>
+<span><span class="va">wt_true</span><span class="op">[</span><span class="fl">1</span>, <span class="op">]</span> <span class="op">&lt;-</span> <span class="va">w_bar</span></span>
+<span></span>
+<span><span class="co"># Subsequent years: cohort effect enters at youngest age;</span></span>
+<span><span class="co"># year effect scales the growth increment (exact wt.tpl logic)</span></span>
+<span><span class="kw">for</span> <span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">2</span>, <span class="va">nyrs</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">wt_true</span><span class="op">[</span><span class="va">i</span>, <span class="fl">1</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">w_bar</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span> <span class="op">*</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="fl">0.5</span> <span class="op">*</span> <span class="va">sigma_coh</span><span class="op">^</span><span class="fl">2</span> <span class="op">+</span> <span class="va">sigma_coh</span> <span class="op">*</span> <span class="va">coh_eff</span><span class="op">[</span><span class="va">i</span><span class="op">]</span><span class="op">)</span></span>
+<span>  <span class="va">wt_true</span><span class="op">[</span><span class="va">i</span>, <span class="op">-</span><span class="fl">1</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">wt_true</span><span class="op">[</span><span class="va">i</span> <span class="op">-</span> <span class="fl">1</span>, <span class="op">-</span><span class="va">nages</span><span class="op">]</span> <span class="op">+</span></span>
+<span>    <span class="va">wt_inc</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="fl">0.5</span> <span class="op">*</span> <span class="va">sigma_yr</span><span class="op">^</span><span class="fl">2</span> <span class="op">+</span> <span class="va">sigma_yr</span> <span class="op">*</span> <span class="va">yr_eff</span><span class="op">[</span><span class="va">i</span><span class="op">]</span><span class="op">)</span></span>
+<span><span class="op">}</span></span></code></pre></div>
 </div>
-<div class="section level2">
-<h2 id="age-and-year-ranges">── Age and year ranges
-───────────────────────────────────────────────────────<a class="anchor" aria-label="anchor" href="#age-and-year-ranges"></a>
-</h2>
-<p>age_st &lt;- 2L age_end &lt;- 11L ages &lt;- seq(age_st, age_end)
-nages &lt;- length(ages)</p>
-<p>styr &lt;- 1980L endyr &lt;- 2022L years &lt;- seq(styr, endyr) nyrs
-&lt;- length(years)</p>
+<div class="section level3">
+<h3 id="build-the-age-reading-error-matrix-boldsymbolpi">Build the Age-Reading Error Matrix
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝚷</mi><annotation encoding="application/x-tex">\boldsymbol{\Pi}</annotation></semantics></math><a class="anchor" aria-label="anchor" href="#build-the-age-reading-error-matrix-boldsymbolpi"></a>
+</h3>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co">#' Construct a row-stochastic AREM</span></span>
+<span><span class="co">#' @param ages  integer vector of modeled ages</span></span>
+<span><span class="co">#' @param sigma SD of the discrete-normal misclassification kernel</span></span>
+<span><span class="co">#' @param mu    bias (shift) in read age relative to true age</span></span>
+<span><span class="va">make_Pi</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">ages</span>, <span class="va">sigma</span> <span class="op">=</span> <span class="fl">0</span>, <span class="va">mu</span> <span class="op">=</span> <span class="fl">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">A</span>  <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">ages</span><span class="op">)</span></span>
+<span>  <span class="va">Pi</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fl">0</span>, <span class="va">A</span>, <span class="va">A</span>, dimnames <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>true <span class="op">=</span> <span class="va">ages</span>, read <span class="op">=</span> <span class="va">ages</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="kw">for</span> <span class="op">(</span><span class="va">r</span> <span class="kw">in</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="va">A</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span>           <span class="co"># row = true age</span></span>
+<span>    <span class="va">a_star</span> <span class="op">&lt;-</span> <span class="va">ages</span><span class="op">[</span><span class="va">r</span><span class="op">]</span></span>
+<span>    <span class="va">log_p</span>  <span class="op">&lt;-</span> <span class="op">-</span><span class="op">(</span><span class="va">ages</span> <span class="op">-</span> <span class="va">a_star</span> <span class="op">-</span> <span class="va">mu</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span> <span class="op">/</span> <span class="op">(</span><span class="fl">2</span> <span class="op">*</span> <span class="va">sigma</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span></span>
+<span>    <span class="va">Pi</span><span class="op">[</span><span class="va">r</span>, <span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="va">log_p</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="va">log_p</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="op">}</span></span>
+<span>  <span class="va">Pi</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="va">Pi_identity</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/diag.html" class="external-link">diag</a></span><span class="op">(</span><span class="va">nages</span><span class="op">)</span>                           <span class="co"># Case 1: no error</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/dimnames.html" class="external-link">dimnames</a></span><span class="op">(</span><span class="va">Pi_identity</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">ages</span>, <span class="va">ages</span><span class="op">)</span></span>
+<span><span class="va">Pi_error</span>    <span class="op">&lt;-</span> <span class="fu">make_Pi</span><span class="op">(</span><span class="va">ages</span>, sigma <span class="op">=</span> <span class="va">sigma_ae</span>, mu <span class="op">=</span> <span class="va">mu_ae</span><span class="op">)</span>  <span class="co"># Case 2</span></span></code></pre></div>
 </div>
-<div class="section level2">
-<h2 id="random-effects-standard-deviations">── Random-effects standard deviations
-───────────────────────────────────────<a class="anchor" aria-label="anchor" href="#random-effects-standard-deviations"></a>
-</h2>
-<p>sigma_coh &lt;- exp(-1.8) # cohort SD sigma_yr &lt;- exp(-0.82) #
-year SD</p>
+<div class="section level3">
+<h3 id="contaminate-observed-weights">Contaminate Observed Weights<a class="anchor" aria-label="anchor" href="#contaminate-observed-weights"></a>
+</h3>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># For each year, apply Pi^T to the true weight vector:</span></span>
+<span><span class="co">#   w_tilde[a] = sum_{a*} Pi[a*, a] * w_true[a*]  =  (Pi^T %*% w_true)[a]</span></span>
+<span><span class="va">contaminate</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">wt_mat</span>, <span class="va">Pi</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="co"># wt_mat: [nyrs x nages]; returns same dimension</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/apply.html" class="external-link">apply</a></span><span class="op">(</span><span class="va">wt_mat</span>, <span class="fl">1</span>, <span class="kw">function</span><span class="op">(</span><span class="va">w</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/vector.html" class="external-link">as.vector</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/crossprod.html" class="external-link">crossprod</a></span><span class="op">(</span><span class="va">Pi</span>, <span class="va">w</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="co"># Add independent Gaussian observation noise (proportional to true weight)</span></span>
+<span><span class="va">add_noise</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">wt_mat</span>, <span class="va">cv</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">sd_mat</span> <span class="op">&lt;-</span> <span class="va">wt_mat</span> <span class="op">*</span> <span class="va">cv</span></span>
+<span>  <span class="va">wt_mat</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">wt_mat</span><span class="op">)</span>, <span class="fl">0</span>, <span class="va">sd_mat</span><span class="op">)</span>,</span>
+<span>                  nrow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">wt_mat</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="va">wt_obs_c1</span> <span class="op">&lt;-</span> <span class="fu">add_noise</span><span class="op">(</span><span class="fu">contaminate</span><span class="op">(</span><span class="va">wt_true</span>, <span class="va">Pi_identity</span><span class="op">)</span>, <span class="va">obs_cv</span><span class="op">)</span>  <span class="co"># Case 1</span></span>
+<span><span class="va">wt_obs_c2</span> <span class="op">&lt;-</span> <span class="fu">add_noise</span><span class="op">(</span><span class="fu">contaminate</span><span class="op">(</span><span class="va">wt_true</span>, <span class="va">Pi_error</span><span class="op">)</span>,    <span class="va">obs_cv</span><span class="op">)</span>  <span class="co"># Case 2</span></span></code></pre></div>
 </div>
-<div class="section level2">
-<h2 id="observation-noise-cv-10">── Observation noise (CV ~ 10%)
-─────────────────────────────────────────────<a class="anchor" aria-label="anchor" href="#observation-noise-cv-10"></a>
-</h2>
-<p>obs_cv &lt;- 0.10</p>
+<div class="section level3">
+<h3 id="fit-mean-weight-at-age-naïve-vb-fit-to-year-averaged-observations">Fit Mean Weight-at-Age (Naïve VB Fit to Year-Averaged
+Observations)<a class="anchor" aria-label="anchor" href="#fit-mean-weight-at-age-na%C3%AFve-vb-fit-to-year-averaged-observations"></a>
+</h3>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Objective: fit alpha, L1, L2, K to observed mean-weight-at-age profile</span></span>
+<span><span class="co"># (ignoring year/cohort effects — this is the "plug-in mean" fit)</span></span>
+<span><span class="va">vb_weights</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">pars</span>, <span class="va">ages</span>, <span class="va">age_st</span>, <span class="va">nages</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">L1_</span>    <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="va">pars</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span></span>
+<span>  <span class="va">L2_</span>    <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="va">pars</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span></span>
+<span>  <span class="va">K_</span>     <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Logistic.html" class="external-link">plogis</a></span><span class="op">(</span><span class="va">pars</span><span class="op">[</span><span class="fl">3</span><span class="op">]</span><span class="op">)</span>          <span class="co"># keep K in (0,1)</span></span>
+<span>  <span class="va">alpha_</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="va">pars</span><span class="op">[</span><span class="fl">4</span><span class="op">]</span><span class="op">)</span></span>
+<span>  <span class="va">L_a</span>    <span class="op">&lt;-</span> <span class="va">L1_</span> <span class="op">+</span> <span class="op">(</span><span class="va">L2_</span> <span class="op">-</span> <span class="va">L1_</span><span class="op">)</span> <span class="op">*</span> <span class="op">(</span><span class="fl">1</span> <span class="op">-</span> <span class="va">K_</span><span class="op">^</span><span class="op">(</span><span class="va">ages</span> <span class="op">-</span> <span class="va">age_st</span><span class="op">)</span><span class="op">)</span> <span class="op">/</span> <span class="op">(</span><span class="fl">1</span> <span class="op">-</span> <span class="va">K_</span><span class="op">^</span><span class="op">(</span><span class="va">nages</span> <span class="op">-</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="va">alpha_</span> <span class="op">*</span> <span class="va">L_a</span><span class="op">^</span><span class="fl">3</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="va">nll_vb</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">pars</span>, <span class="va">obs_mean</span>, <span class="va">obs_sd</span>, <span class="va">ages</span>, <span class="va">age_st</span>, <span class="va">nages</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">pred</span> <span class="op">&lt;-</span> <span class="fu">vb_weights</span><span class="op">(</span><span class="va">pars</span>, <span class="va">ages</span>, <span class="va">age_st</span>, <span class="va">nages</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="op">(</span><span class="op">(</span><span class="va">obs_mean</span> <span class="op">-</span> <span class="va">pred</span><span class="op">)</span> <span class="op">/</span> <span class="va">obs_sd</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span> <span class="op">/</span> <span class="fl">2</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="co"># Year-averaged observed weights and their SDs (across years)</span></span>
+<span><span class="va">mn_c1</span>  <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/colSums.html" class="external-link">colMeans</a></span><span class="op">(</span><span class="va">wt_obs_c1</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="va">mn_c2</span>  <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/colSums.html" class="external-link">colMeans</a></span><span class="op">(</span><span class="va">wt_obs_c2</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="va">sd_c1</span>  <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/apply.html" class="external-link">apply</a></span><span class="op">(</span><span class="va">wt_obs_c1</span>, <span class="fl">2</span>, <span class="va">sd</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="va">nyrs</span><span class="op">)</span></span>
+<span><span class="va">sd_c2</span>  <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/apply.html" class="external-link">apply</a></span><span class="op">(</span><span class="va">wt_obs_c2</span>, <span class="fl">2</span>, <span class="va">sd</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="va">nyrs</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Starting values on transformed scale</span></span>
+<span><span class="va">p0</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">L1</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">L2</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/stats/Logistic.html" class="external-link">qlogis</a></span><span class="op">(</span><span class="va">K</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">alpha</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">fit_c1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/optim.html" class="external-link">optim</a></span><span class="op">(</span><span class="va">p0</span>, <span class="va">nll_vb</span>, obs_mean <span class="op">=</span> <span class="va">mn_c1</span>, obs_sd <span class="op">=</span> <span class="va">sd_c1</span>,</span>
+<span>                ages <span class="op">=</span> <span class="va">ages</span>, age_st <span class="op">=</span> <span class="va">age_st</span>, nages <span class="op">=</span> <span class="va">nages</span>,</span>
+<span>                method <span class="op">=</span> <span class="st">"BFGS"</span><span class="op">)</span></span>
+<span><span class="va">fit_c2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/optim.html" class="external-link">optim</a></span><span class="op">(</span><span class="va">p0</span>, <span class="va">nll_vb</span>, obs_mean <span class="op">=</span> <span class="va">mn_c2</span>, obs_sd <span class="op">=</span> <span class="va">sd_c2</span>,</span>
+<span>                ages <span class="op">=</span> <span class="va">ages</span>, age_st <span class="op">=</span> <span class="va">age_st</span>, nages <span class="op">=</span> <span class="va">nages</span>,</span>
+<span>                method <span class="op">=</span> <span class="st">"BFGS"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">pred_true</span> <span class="op">&lt;-</span> <span class="va">w_bar</span></span>
+<span><span class="va">pred_c1</span>   <span class="op">&lt;-</span> <span class="fu">vb_weights</span><span class="op">(</span><span class="va">fit_c1</span><span class="op">$</span><span class="va">par</span>, <span class="va">ages</span>, <span class="va">age_st</span>, <span class="va">nages</span><span class="op">)</span></span>
+<span><span class="va">pred_c2</span>   <span class="op">&lt;-</span> <span class="fu">vb_weights</span><span class="op">(</span><span class="va">fit_c2</span><span class="op">$</span><span class="va">par</span>, <span class="va">ages</span>, <span class="va">age_st</span>, <span class="va">nages</span><span class="op">)</span></span></code></pre></div>
 </div>
-<div class="section level2">
-<h2 id="age-reading-error-parameters-case-2">── Age-reading error parameters (Case 2)
-────────────────────────────────────<a class="anchor" aria-label="anchor" href="#age-reading-error-parameters-case-2"></a>
-</h2>
-<p>sigma_ae &lt;- 1.2 # imprecision: ~1.2-year SD in read ages mu_ae
-&lt;- -1.0 # bias: ages systematically underestimated by ~1 year</p>
-<p>set.seed(2024)</p>
-<pre><code>
-### Mean Weight-at-Age and Growth Increments
-
-```{r growth-curve}
-# Discrete von Bertalanffy mean length then mean weight
-L_bar &lt;- L1 + (L2 - L1) * (1 - K^(ages - age_st)) / (1 - K^(nages - 1))
-w_bar &lt;- alpha * L_bar^3          # mean weight at age (kg)
-wt_inc &lt;- diff(w_bar)             # Δ_a = w_bar[a+1] - w_bar[a]
-
-names(w_bar)  &lt;- ages
-names(wt_inc) &lt;- ages[-nages]</code></pre>
-<div class="section level4">
-<h4 id="simulate-true-weight-trajectories-with-random-effects">Simulate True Weight Trajectories (with Random Effects)<a class="anchor" aria-label="anchor" href="#simulate-true-weight-trajectories-with-random-effects"></a>
-</h4>
-<p>```{r simulate-truth} # Draw random effects (unit normal, same
-convention as wt.tpl) coh_eff &lt;- rnorm(nyrs) yr_eff &lt;-
-rnorm(nyrs)</p>
-</div>
-</div>
-<div class="section level2">
-<h2 id="wt_trueyear-index-age-index">wt_true[year index, age index]<a class="anchor" aria-label="anchor" href="#wt_trueyear-index-age-index"></a>
-</h2>
-<p>wt_true &lt;- matrix(NA_real_, nrow = nyrs, ncol = nages, dimnames =
-list(years, ages))</p>
-</div>
-<div class="section level2">
-<h2 id="first-year-mean-weights-no-random-effects-to-propagate">First year: mean weights (no random effects to propagate)<a class="anchor" aria-label="anchor" href="#first-year-mean-weights-no-random-effects-to-propagate"></a>
-</h2>
-<p>wt_true[1, ] &lt;- w_bar</p>
-</div>
-<div class="section level2">
-<h2 id="subsequent-years-cohort-effect-enters-at-youngest-age">Subsequent years: cohort effect enters at youngest age;<a class="anchor" aria-label="anchor" href="#subsequent-years-cohort-effect-enters-at-youngest-age"></a>
-</h2>
-</div>
-<div class="section level2">
-<h2 id="year-effect-scales-the-growth-increment-exact-wt-tpl-logic">year effect scales the growth increment (exact wt.tpl logic)<a class="anchor" aria-label="anchor" href="#year-effect-scales-the-growth-increment-exact-wt-tpl-logic"></a>
-</h2>
-<p>for (i in seq(2, nyrs)) { wt_true[i, 1] &lt;- w_bar[1] <em> exp(0.5
-</em> sigma_coh^2 + sigma_coh * coh_eff[i]) wt_true[i, -1] &lt;-
-wt_true[i - 1, -nages] + wt_inc * exp(0.5 * sigma_yr^2 + sigma_yr *
-yr_eff[i]) }</p>
-<pre><code>
-### Build the Age-Reading Error Matrix $\boldsymbol{\Pi}$
-
-```{r arem}
-#' Construct a row-stochastic AREM
-#' @param ages  integer vector of modeled ages
-#' @param sigma SD of the discrete-normal misclassification kernel
-#' @param mu    bias (shift) in read age relative to true age
-make_Pi &lt;- function(ages, sigma = 0, mu = 0) {
-  A  &lt;- length(ages)
-  Pi &lt;- matrix(0, A, A, dimnames = list(true = ages, read = ages))
-  for (r in seq_len(A)) {           # row = true age
-    a_star &lt;- ages[r]
-    log_p  &lt;- -(ages - a_star - mu)^2 / (2 * sigma^2)
-    Pi[r, ] &lt;- exp(log_p) / sum(exp(log_p))
-  }
-  Pi
-}
-
-Pi_identity &lt;- diag(nages)                           # Case 1: no error
-dimnames(Pi_identity) &lt;- list(ages, ages)
-Pi_error    &lt;- make_Pi(ages, sigma = sigma_ae, mu = mu_ae)  # Case 2</code></pre>
-<div class="section level4">
-<h4 id="contaminate-observed-weights">Contaminate Observed Weights<a class="anchor" aria-label="anchor" href="#contaminate-observed-weights"></a>
-</h4>
-<p>```{r contaminate} # For each year, apply Pi^T to the true weight
-vector: # w_tilde[a] = sum_{a<em>} Pi[a*, a] </em> w_true[a*] = (Pi^T
-%*% w_true)[a] contaminate &lt;- function(wt_mat, Pi) { # wt_mat: [nyrs
-x nages]; returns same dimension t(apply(wt_mat, 1, function(w)
-as.vector(crossprod(Pi, w)))) }</p>
-</div>
-</div>
-<div class="section level2">
-<h2 id="add-independent-gaussian-observation-noise-proportional-to-true-weight">Add independent Gaussian observation noise (proportional to true
-weight)<a class="anchor" aria-label="anchor" href="#add-independent-gaussian-observation-noise-proportional-to-true-weight"></a>
-</h2>
-<p>add_noise &lt;- function(wt_mat, cv) { sd_mat &lt;- wt_mat * cv
-wt_mat + matrix(rnorm(length(wt_mat), 0, sd_mat), nrow = nrow(wt_mat))
-}</p>
-<p>wt_obs_c1 &lt;- add_noise(contaminate(wt_true, Pi_identity), obs_cv)
-# Case 1 wt_obs_c2 &lt;- add_noise(contaminate(wt_true, Pi_error),
-obs_cv) # Case 2</p>
-<pre><code>
-### Fit Mean Weight-at-Age (Naïve VB Fit to Year-Averaged Observations)
-
-```{r fitting}
-# Objective: fit alpha, L1, L2, K to observed mean-weight-at-age profile
-# (ignoring year/cohort effects — this is the "plug-in mean" fit)
-vb_weights &lt;- function(pars, ages, age_st, nages) {
-  L1_    &lt;- exp(pars[1])
-  L2_    &lt;- exp(pars[2])
-  K_     &lt;- plogis(pars[3])          # keep K in (0,1)
-  alpha_ &lt;- exp(pars[4])
-  L_a    &lt;- L1_ + (L2_ - L1_) * (1 - K_^(ages - age_st)) / (1 - K_^(nages - 1))
-  alpha_ * L_a^3
-}
-
-nll_vb &lt;- function(pars, obs_mean, obs_sd, ages, age_st, nages) {
-  pred &lt;- vb_weights(pars, ages, age_st, nages)
-  sum(((obs_mean - pred) / obs_sd)^2) / 2
-}
-
-# Year-averaged observed weights and their SDs (across years)
-mn_c1  &lt;- colMeans(wt_obs_c1, na.rm = TRUE)
-mn_c2  &lt;- colMeans(wt_obs_c2, na.rm = TRUE)
-sd_c1  &lt;- apply(wt_obs_c1, 2, sd) / sqrt(nyrs)
-sd_c2  &lt;- apply(wt_obs_c2, 2, sd) / sqrt(nyrs)
-
-# Starting values on transformed scale
-p0 &lt;- c(log(L1), log(L2), qlogis(K), log(alpha))
-
-fit_c1 &lt;- optim(p0, nll_vb, obs_mean = mn_c1, obs_sd = sd_c1,
-                ages = ages, age_st = age_st, nages = nages,
-                method = "BFGS")
-fit_c2 &lt;- optim(p0, nll_vb, obs_mean = mn_c2, obs_sd = sd_c2,
-                ages = ages, age_st = age_st, nages = nages,
-                method = "BFGS")
-
-pred_true &lt;- w_bar
-pred_c1   &lt;- vb_weights(fit_c1$par, ages, age_st, nages)
-pred_c2   &lt;- vb_weights(fit_c2$par, ages, age_st, nages)</code></pre>
-<div class="section level4">
-<h4 id="figure-1-age-reading-error-matrix">Figure 1 — Age-Reading Error Matrix<a class="anchor" aria-label="anchor" href="#figure-1-age-reading-error-matrix"></a>
-</h4>
-<p>```{r fig-arem} #| fig-width: 9 #| fig-height: 4 #| fig-cap:
-“Age-reading error matrices for the two simulation scenarios. Left:
+<div class="section level3">
+<h3 id="figure-1-age-reading-error-matrix">Figure 1 — Age-Reading Error Matrix<a class="anchor" aria-label="anchor" href="#figure-1-age-reading-error-matrix"></a>
+</h3>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">Pi_to_df</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">Pi</span>, <span class="va">label</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">as.table</a></span><span class="op">(</span><span class="va">Pi</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">df</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"true_age"</span>, <span class="st">"read_age"</span>, <span class="st">"prob"</span><span class="op">)</span></span>
+<span>  <span class="va">df</span><span class="op">$</span><span class="va">true_age</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">true_age</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="va">df</span><span class="op">$</span><span class="va">read_age</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">read_age</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="va">df</span><span class="op">$</span><span class="va">scenario</span> <span class="op">&lt;-</span> <span class="va">label</span></span>
+<span>  <span class="va">df</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="va">df_Pi</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span><span class="fu">Pi_to_df</span><span class="op">(</span><span class="va">Pi_identity</span>, <span class="st">"Case 1: No error (Π = I)"</span><span class="op">)</span>,</span>
+<span>               <span class="fu">Pi_to_df</span><span class="op">(</span><span class="va">Pi_error</span>,    <span class="st">"Case 2: σ_ae = 1.2, μ_ae = −1"</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">df_Pi</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">read_age</span>, y <span class="op">=</span> <span class="va">true_age</span>, fill <span class="op">=</span> <span class="va">prob</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_tile.html" class="external-link">geom_tile</a></span><span class="op">(</span>colour <span class="op">=</span> <span class="st">"grey80"</span>, linewidth <span class="op">=</span> <span class="fl">0.3</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_text.html" class="external-link">geom_text</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>label <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">prob</span> <span class="op">&gt;</span> <span class="fl">0.005</span>,</span>
+<span>                               <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"%.2f"</span>, <span class="va">prob</span><span class="op">)</span>, <span class="st">""</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>            size <span class="op">=</span> <span class="fl">2.5</span>, colour <span class="op">=</span> <span class="st">"white"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_viridis.html" class="external-link">scale_fill_viridis_c</a></span><span class="op">(</span>option <span class="op">=</span> <span class="st">"plasma"</span>, name <span class="op">=</span> <span class="st">"Pr(read | true)"</span>,</span>
+<span>                       limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_x_continuous</a></span><span class="op">(</span>breaks <span class="op">=</span> <span class="va">ages</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_y_continuous</a></span><span class="op">(</span>breaks <span class="op">=</span> <span class="va">ages</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html" class="external-link">facet_wrap</a></span><span class="op">(</span><span class="op">~</span><span class="va">scenario</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Read age"</span>, y <span class="op">=</span> <span class="st">"True age"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span>base_size <span class="op">=</span> <span class="fl">11</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>panel.grid <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_blank</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>        legend.position <span class="op">=</span> <span class="st">"right"</span><span class="op">)</span></span></code></pre></div>
+<div class="figure">
+<img src="01-age-error-framework_files/figure-html/fig-arem-1.png" class="r-plt" alt="Age-reading error matrices for the two simulation scenarios. Left: identity matrix (Case 1 — no error). Right: discrete-normal AREM with σ_ae = 1.2 yr and μ_ae = −1 yr (Case 2 — error + bias). Each cell shows the probability that a fish of true age (row) is assigned to read age (column). The off-diagonal mass and leftward shift of the mode are clearly visible." width="864"><p class="caption">
+Age-reading error matrices for the two simulation scenarios. Left:
 identity matrix (Case 1 — no error). Right: discrete-normal AREM with
 σ_ae = 1.2 yr and μ_ae = −1 yr (Case 2 — error + bias). Each cell shows
 the probability that a fish of true age (row) is assigned to read age
 (column). The off-diagonal mass and leftward shift of the mode are
-clearly visible.”</p>
-<p>Pi_to_df &lt;- function(Pi, label) { df &lt;-
-as.data.frame(as.table(Pi)) colnames(df) &lt;- c(“true_age”, “read_age”,
-“prob”)
-df<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mi>r</mi><mi>u</mi><msub><mi>e</mi><mi>a</mi></msub><mi>g</mi><mi>e</mi><mo>&lt;</mo><mi>−</mi><mi>a</mi><mi>s</mi><mi>.</mi><mi>i</mi><mi>n</mi><mi>t</mi><mi>e</mi><mi>g</mi><mi>e</mi><mi>r</mi><mo stretchy="false" form="prefix">(</mo><mi>a</mi><mi>s</mi><mi>.</mi><mi>c</mi><mi>h</mi><mi>a</mi><mi>r</mi><mi>a</mi><mi>c</mi><mi>t</mi><mi>e</mi><mi>r</mi><mo stretchy="false" form="prefix">(</mo><mi>d</mi><mi>f</mi></mrow><annotation encoding="application/x-tex">true_age &lt;- as.integer(as.character(df</annotation></semantics></math>true_age))
-df<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>r</mi><mi>e</mi><mi>a</mi><msub><mi>d</mi><mi>a</mi></msub><mi>g</mi><mi>e</mi><mo>&lt;</mo><mi>−</mi><mi>a</mi><mi>s</mi><mi>.</mi><mi>i</mi><mi>n</mi><mi>t</mi><mi>e</mi><mi>g</mi><mi>e</mi><mi>r</mi><mo stretchy="false" form="prefix">(</mo><mi>a</mi><mi>s</mi><mi>.</mi><mi>c</mi><mi>h</mi><mi>a</mi><mi>r</mi><mi>a</mi><mi>c</mi><mi>t</mi><mi>e</mi><mi>r</mi><mo stretchy="false" form="prefix">(</mo><mi>d</mi><mi>f</mi></mrow><annotation encoding="application/x-tex">read_age &lt;- as.integer(as.character(df</annotation></semantics></math>read_age))
-df$scenario &lt;- label df }</p>
-<p>df_Pi &lt;- rbind(Pi_to_df(Pi_identity, “Case 1: No error (Π = I)”),
-Pi_to_df(Pi_error, “Case 2: σ_ae = 1.2, μ_ae = −1”))</p>
-<p>ggplot(df_Pi, aes(x = read_age, y = true_age, fill = prob)) +
-geom_tile(colour = “grey80”, linewidth = 0.3) + geom_text(aes(label =
-ifelse(prob &gt; 0.005, sprintf(“%.2f”, prob), ““)), size = 2.5, colour
-=”white”) + scale_fill_viridis_c(option = “plasma”, name = “Pr(read |
-true)”, limits = c(0, 1)) + scale_x_continuous(breaks = ages) +
-scale_y_continuous(breaks = ages) + facet_wrap(~scenario) + labs(x =
-“Read age”, y = “True age”) + theme_bw(base_size = 11) +
-theme(panel.grid = element_blank(), legend.position = “right”)</p>
-<pre><code>
-### Figure 2 — True vs Contaminated Mean Weight Profiles
-
-```{r fig-profiles}
-#| fig-width: 8
-#| fig-height: 5
-#| fig-cap: "Year-averaged weight-at-age. Black line: true mean weight w̄_a. Blue points/line: Case 1 observed means (Pi = I) — recover the truth within sampling noise. Red points/line: Case 2 contaminated means (σ_ae = 1.2, μ_ae = −1) — systematically elevated for younger ages and depressed for the oldest ages, reflecting mixing with heavier older fish and lighter younger fish respectively."
-
-df_prof &lt;- data.frame(
-  age    = rep(ages, 3),
-  weight = c(pred_true, mn_c1, mn_c2),
-  se     = c(rep(0, nages), sd_c1, sd_c2),
-  label  = rep(c("True  w̄_a",
-                 "Case 1: observed (no error)",
-                 "Case 2: observed (error + bias)"),
-               each = nages)
-)
-df_prof$label &lt;- factor(df_prof$label,
-                         levels = c("True  w̄_a",
-                                    "Case 1: observed (no error)",
-                                    "Case 2: observed (error + bias)"))
-
-cols &lt;- c("True  w̄_a"                       = "black",
-          "Case 1: observed (no error)"       = "#2166ac",
-          "Case 2: observed (error + bias)"   = "#d6604d")
-
-ggplot(df_prof, aes(x = age, y = weight, colour = label, group = label)) +
-  geom_ribbon(aes(ymin = weight - 2 * se, ymax = weight + 2 * se,
-                  fill = label), alpha = 0.15, colour = NA) +
-  geom_line(linewidth = 1) +
-  geom_point(size = 2.5) +
-  scale_colour_manual(values = cols) +
-  scale_fill_manual(values = cols) +
-  scale_x_continuous(breaks = ages) +
-  labs(x = "Age", y = "Mean weight (kg)",
-       colour = NULL, fill = NULL) +
-  theme_bw(base_size = 12) +
-  theme(legend.position = "bottom")</code></pre>
+clearly visible.
+</p>
 </div>
-<div class="section level4">
-<h4 id="figure-3-fitted-growth-curves-vs-truth">Figure 3 — Fitted Growth Curves vs Truth<a class="anchor" aria-label="anchor" href="#figure-3-fitted-growth-curves-vs-truth"></a>
-</h4>
-<p>```{r fig-fits} #| fig-width: 8 #| fig-height: 5 #| fig-cap: “Naïve
-von Bertalanffy fits (lines) overlaid on the year-averaged observations
-(points ± 2 SE). The Case 1 fit closely tracks the true curve. The Case
-2 fit is pulled toward the contaminated data, yielding incorrect growth
-parameter estimates — the curve is too steep at young ages and reaches
-asymptote too quickly.”</p>
-<p>df_fit &lt;- data.frame( age = rep(ages, 3), weight = c(pred_true,
-pred_c1, pred_c2), label = rep(c(“True w̄_a”, “Case 1: VB fit (no
-error)”, “Case 2: VB fit (error + bias)”), each = nages) )
-df_fit<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>l</mi><mi>a</mi><mi>b</mi><mi>e</mi><mi>l</mi><mo>&lt;</mo><mi>−</mi><mi>f</mi><mi>a</mi><mi>c</mi><mi>t</mi><mi>o</mi><mi>r</mi><mo stretchy="false" form="prefix">(</mo><mi>d</mi><msub><mi>f</mi><mi>f</mi></msub><mi>i</mi><mi>t</mi></mrow><annotation encoding="application/x-tex">label &lt;- factor(df_fit</annotation></semantics></math>label,
-levels = c(“True w̄_a”, “Case 1: VB fit (no error)”, “Case 2: VB fit
-(error + bias)”))</p>
-<p>df_pts &lt;- data.frame( age = rep(ages, 2), weight = c(mn_c1,
-mn_c2), se = c(sd_c1, sd_c2), label = rep(c(“Case 1: VB fit (no error)”,
-“Case 2: VB fit (error + bias)”), each = nages) )</p>
-<p>cols2 &lt;- c(“True w̄_a” = “black”, “Case 1: VB fit (no error)” =
-“#2166ac”, “Case 2: VB fit (error + bias)” = “#d6604d”)</p>
-<p>ggplot() + geom_errorbar(data = df_pts, aes(x = age, ymin = weight -
-2 * se, ymax = weight + 2 * se, colour = label), width = 0.3, alpha =
-0.6) + geom_point(data = df_pts, aes(x = age, y = weight, colour =
-label), size = 2.5) + geom_line(data = df_fit, aes(x = age, y = weight,
-colour = label, linetype = label), linewidth = 1.1) +
-scale_colour_manual(values = cols2) + scale_linetype_manual(values =
-c(“True w̄_a” = “dashed”, “Case 1: VB fit (no error)” = “solid”, “Case 2:
-VB fit (error + bias)” = “solid”)) + scale_x_continuous(breaks = ages) +
-labs(x = “Age”, y = “Mean weight (kg)”, colour = NULL, linetype = NULL)
-+ theme_bw(base_size = 12) + theme(legend.position = “bottom”)</p>
-<pre><code>
-### Figure 4 — Absolute and Relative Bias by Age
-
-```{r fig-bias}
-#| fig-width: 9
-#| fig-height: 4
-#| fig-cap: "Absolute bias (left) and relative bias as a percentage (right) introduced by age-reading error and systematic underestimation of age (μ_ae = −1 yr). Bias peaks at intermediate ages where growth increments Δ_a are largest. At the oldest age the mixture effect reverses sign because there are no older fish to draw from — the truncation of the AREM at age 11 pulls old-age weights slightly downward."
-
-bias_abs &lt;- mn_c2 - pred_true
-bias_rel &lt;- 100 * bias_abs / pred_true
-
-df_bias &lt;- data.frame(
-  age      = ages,
-  abs_bias = bias_abs,
-  rel_bias = bias_rel
-)
-
-p_abs &lt;- ggplot(df_bias, aes(x = age, y = abs_bias,
-                              fill = ifelse(abs_bias &gt; 0, "pos", "neg"))) +
-  geom_col(width = 0.7, colour = "grey40") +
-  geom_hline(yintercept = 0, linewidth = 0.4) +
-  scale_fill_manual(values = c(pos = "#d6604d", neg = "#4393c3"),
-                    guide = "none") +
-  scale_x_continuous(breaks = ages) +
-  labs(x = "Age", y = "Bias (kg)",
-       title = "Absolute weight bias") +
-  theme_bw(base_size = 11)
-
-p_rel &lt;- ggplot(df_bias, aes(x = age, y = rel_bias,
-                              fill = ifelse(rel_bias &gt; 0, "pos", "neg"))) +
-  geom_col(width = 0.7, colour = "grey40") +
-  geom_hline(yintercept = 0, linewidth = 0.4) +
-  scale_fill_manual(values = c(pos = "#d6604d", neg = "#4393c3"),
-                    guide = "none") +
-  scale_x_continuous(breaks = ages) +
-  labs(x = "Age", y = "Relative bias (%)",
-       title = "Relative weight bias") +
-  theme_bw(base_size = 11)
-
-p_abs + p_rel</code></pre>
 </div>
-<div class="section level4">
-<h4 id="figure-5-year-by-year-weight-trajectories-at-selected-ages">Figure 5 — Year-by-Year Weight Trajectories at Selected Ages<a class="anchor" aria-label="anchor" href="#figure-5-year-by-year-weight-trajectories-at-selected-ages"></a>
-</h4>
-<p>```{r fig-trajectories} #| fig-width: 10 #| fig-height: 6 #| fig-cap:
-“Annual weight trajectories at four representative ages (3, 5, 8, 11)
-for the true process (black), Case 1 observations (blue), and Case 2
+<div class="section level3">
+<h3 id="figure-2-true-vs-contaminated-mean-weight-profiles">Figure 2 — True vs Contaminated Mean Weight Profiles<a class="anchor" aria-label="anchor" href="#figure-2-true-vs-contaminated-mean-weight-profiles"></a>
+</h3>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">df_prof</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
+<span>  age    <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="va">ages</span>, <span class="fl">3</span><span class="op">)</span>,</span>
+<span>  weight <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">pred_true</span>, <span class="va">mn_c1</span>, <span class="va">mn_c2</span><span class="op">)</span>,</span>
+<span>  se     <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">0</span>, <span class="va">nages</span><span class="op">)</span>, <span class="va">sd_c1</span>, <span class="va">sd_c2</span><span class="op">)</span>,</span>
+<span>  label  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"True  w̄_a"</span>,</span>
+<span>                 <span class="st">"Case 1: observed (no error)"</span>,</span>
+<span>                 <span class="st">"Case 2: observed (error + bias)"</span><span class="op">)</span>,</span>
+<span>               each <span class="op">=</span> <span class="va">nages</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">df_prof</span><span class="op">$</span><span class="va">label</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">df_prof</span><span class="op">$</span><span class="va">label</span>,</span>
+<span>                         levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"True  w̄_a"</span>,</span>
+<span>                                    <span class="st">"Case 1: observed (no error)"</span>,</span>
+<span>                                    <span class="st">"Case 2: observed (error + bias)"</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">cols</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"True  w̄_a"</span>                       <span class="op">=</span> <span class="st">"black"</span>,</span>
+<span>          <span class="st">"Case 1: observed (no error)"</span>       <span class="op">=</span> <span class="st">"#2166ac"</span>,</span>
+<span>          <span class="st">"Case 2: observed (error + bias)"</span>   <span class="op">=</span> <span class="st">"#d6604d"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">df_prof</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">age</span>, y <span class="op">=</span> <span class="va">weight</span>, colour <span class="op">=</span> <span class="va">label</span>, group <span class="op">=</span> <span class="va">label</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_ribbon.html" class="external-link">geom_ribbon</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>ymin <span class="op">=</span> <span class="va">weight</span> <span class="op">-</span> <span class="fl">2</span> <span class="op">*</span> <span class="va">se</span>, ymax <span class="op">=</span> <span class="va">weight</span> <span class="op">+</span> <span class="fl">2</span> <span class="op">*</span> <span class="va">se</span>,</span>
+<span>                  fill <span class="op">=</span> <span class="va">label</span><span class="op">)</span>, alpha <span class="op">=</span> <span class="fl">0.15</span>, colour <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span>linewidth <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">2.5</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html" class="external-link">scale_colour_manual</a></span><span class="op">(</span>values <span class="op">=</span> <span class="va">cols</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html" class="external-link">scale_fill_manual</a></span><span class="op">(</span>values <span class="op">=</span> <span class="va">cols</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_x_continuous</a></span><span class="op">(</span>breaks <span class="op">=</span> <span class="va">ages</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Age"</span>, y <span class="op">=</span> <span class="st">"Mean weight (kg)"</span>,</span>
+<span>       colour <span class="op">=</span> <span class="cn">NULL</span>, fill <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span>base_size <span class="op">=</span> <span class="fl">12</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"bottom"</span><span class="op">)</span></span></code></pre></div>
+<div class="figure">
+<img src="01-age-error-framework_files/figure-html/fig-profiles-1.png" class="r-plt" alt="Year-averaged weight-at-age. Black line: true mean weight w̄_a. Blue points/line: Case 1 observed means (Pi = I) — recover the truth within sampling noise. Red points/line: Case 2 contaminated means (σ_ae = 1.2, μ_ae = −1) — systematically elevated for younger ages and depressed for the oldest ages, reflecting mixing with heavier older fish and lighter younger fish respectively." width="768"><p class="caption">
+Year-averaged weight-at-age. Black line: true mean weight w̄_a. Blue
+points/line: Case 1 observed means (Pi = I) — recover the truth within
+sampling noise. Red points/line: Case 2 contaminated means (σ_ae = 1.2,
+μ_ae = −1) — systematically elevated for younger ages and depressed for
+the oldest ages, reflecting mixing with heavier older fish and lighter
+younger fish respectively.
+</p>
+</div>
+</div>
+<div class="section level3">
+<h3 id="figure-3-fitted-growth-curves-vs-truth">Figure 3 — Fitted Growth Curves vs Truth<a class="anchor" aria-label="anchor" href="#figure-3-fitted-growth-curves-vs-truth"></a>
+</h3>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">df_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
+<span>  age    <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="va">ages</span>, <span class="fl">3</span><span class="op">)</span>,</span>
+<span>  weight <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">pred_true</span>, <span class="va">pred_c1</span>, <span class="va">pred_c2</span><span class="op">)</span>,</span>
+<span>  label  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"True  w̄_a"</span>,</span>
+<span>                 <span class="st">"Case 1: VB fit (no error)"</span>,</span>
+<span>                 <span class="st">"Case 2: VB fit (error + bias)"</span><span class="op">)</span>,</span>
+<span>               each <span class="op">=</span> <span class="va">nages</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">df_fit</span><span class="op">$</span><span class="va">label</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">df_fit</span><span class="op">$</span><span class="va">label</span>,</span>
+<span>                        levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"True  w̄_a"</span>,</span>
+<span>                                   <span class="st">"Case 1: VB fit (no error)"</span>,</span>
+<span>                                   <span class="st">"Case 2: VB fit (error + bias)"</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">df_pts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
+<span>  age    <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="va">ages</span>, <span class="fl">2</span><span class="op">)</span>,</span>
+<span>  weight <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">mn_c1</span>, <span class="va">mn_c2</span><span class="op">)</span>,</span>
+<span>  se     <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">sd_c1</span>, <span class="va">sd_c2</span><span class="op">)</span>,</span>
+<span>  label  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Case 1: VB fit (no error)"</span>,</span>
+<span>                 <span class="st">"Case 2: VB fit (error + bias)"</span><span class="op">)</span>, each <span class="op">=</span> <span class="va">nages</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">cols2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"True  w̄_a"</span>                      <span class="op">=</span> <span class="st">"black"</span>,</span>
+<span>           <span class="st">"Case 1: VB fit (no error)"</span>        <span class="op">=</span> <span class="st">"#2166ac"</span>,</span>
+<span>           <span class="st">"Case 2: VB fit (error + bias)"</span>    <span class="op">=</span> <span class="st">"#d6604d"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_linerange.html" class="external-link">geom_errorbar</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">df_pts</span>,</span>
+<span>                <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">age</span>, ymin <span class="op">=</span> <span class="va">weight</span> <span class="op">-</span> <span class="fl">2</span> <span class="op">*</span> <span class="va">se</span>, ymax <span class="op">=</span> <span class="va">weight</span> <span class="op">+</span> <span class="fl">2</span> <span class="op">*</span> <span class="va">se</span>,</span>
+<span>                    colour <span class="op">=</span> <span class="va">label</span><span class="op">)</span>, width <span class="op">=</span> <span class="fl">0.3</span>, alpha <span class="op">=</span> <span class="fl">0.6</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">df_pts</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">age</span>, y <span class="op">=</span> <span class="va">weight</span>, colour <span class="op">=</span> <span class="va">label</span><span class="op">)</span>,</span>
+<span>             size <span class="op">=</span> <span class="fl">2.5</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">df_fit</span>,  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">age</span>, y <span class="op">=</span> <span class="va">weight</span>, colour <span class="op">=</span> <span class="va">label</span>,</span>
+<span>                                linetype <span class="op">=</span> <span class="va">label</span><span class="op">)</span>, linewidth <span class="op">=</span> <span class="fl">1.1</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html" class="external-link">scale_colour_manual</a></span><span class="op">(</span>values <span class="op">=</span> <span class="va">cols2</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html" class="external-link">scale_linetype_manual</a></span><span class="op">(</span>values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"True  w̄_a"</span> <span class="op">=</span> <span class="st">"dashed"</span>,</span>
+<span>                                   <span class="st">"Case 1: VB fit (no error)"</span>     <span class="op">=</span> <span class="st">"solid"</span>,</span>
+<span>                                   <span class="st">"Case 2: VB fit (error + bias)"</span> <span class="op">=</span> <span class="st">"solid"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_x_continuous</a></span><span class="op">(</span>breaks <span class="op">=</span> <span class="va">ages</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Age"</span>, y <span class="op">=</span> <span class="st">"Mean weight (kg)"</span>,</span>
+<span>       colour <span class="op">=</span> <span class="cn">NULL</span>, linetype <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span>base_size <span class="op">=</span> <span class="fl">12</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"bottom"</span><span class="op">)</span></span></code></pre></div>
+<div class="figure">
+<img src="01-age-error-framework_files/figure-html/fig-fits-1.png" class="r-plt" alt="Naïve von Bertalanffy fits (lines) overlaid on the year-averaged observations (points ± 2 SE). The Case 1 fit closely tracks the true curve. The Case 2 fit is pulled toward the contaminated data, yielding incorrect growth parameter estimates — the curve is too steep at young ages and reaches asymptote too quickly." width="768"><p class="caption">
+Naïve von Bertalanffy fits (lines) overlaid on the year-averaged
+observations (points ± 2 SE). The Case 1 fit closely tracks the true
+curve. The Case 2 fit is pulled toward the contaminated data, yielding
+incorrect growth parameter estimates — the curve is too steep at young
+ages and reaches asymptote too quickly.
+</p>
+</div>
+</div>
+<div class="section level3">
+<h3 id="figure-4-absolute-and-relative-bias-by-age">Figure 4 — Absolute and Relative Bias by Age<a class="anchor" aria-label="anchor" href="#figure-4-absolute-and-relative-bias-by-age"></a>
+</h3>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">bias_abs</span> <span class="op">&lt;-</span> <span class="va">mn_c2</span> <span class="op">-</span> <span class="va">pred_true</span></span>
+<span><span class="va">bias_rel</span> <span class="op">&lt;-</span> <span class="fl">100</span> <span class="op">*</span> <span class="va">bias_abs</span> <span class="op">/</span> <span class="va">pred_true</span></span>
+<span></span>
+<span><span class="va">df_bias</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
+<span>  age      <span class="op">=</span> <span class="va">ages</span>,</span>
+<span>  abs_bias <span class="op">=</span> <span class="va">bias_abs</span>,</span>
+<span>  rel_bias <span class="op">=</span> <span class="va">bias_rel</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">p_abs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">df_bias</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">age</span>, y <span class="op">=</span> <span class="va">abs_bias</span>,</span>
+<span>                              fill <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">abs_bias</span> <span class="op">&gt;</span> <span class="fl">0</span>, <span class="st">"pos"</span>, <span class="st">"neg"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_bar.html" class="external-link">geom_col</a></span><span class="op">(</span>width <span class="op">=</span> <span class="fl">0.7</span>, colour <span class="op">=</span> <span class="st">"grey40"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_hline</a></span><span class="op">(</span>yintercept <span class="op">=</span> <span class="fl">0</span>, linewidth <span class="op">=</span> <span class="fl">0.4</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html" class="external-link">scale_fill_manual</a></span><span class="op">(</span>values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>pos <span class="op">=</span> <span class="st">"#d6604d"</span>, neg <span class="op">=</span> <span class="st">"#4393c3"</span><span class="op">)</span>,</span>
+<span>                    guide <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_x_continuous</a></span><span class="op">(</span>breaks <span class="op">=</span> <span class="va">ages</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Age"</span>, y <span class="op">=</span> <span class="st">"Bias (kg)"</span>,</span>
+<span>       title <span class="op">=</span> <span class="st">"Absolute weight bias"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span>base_size <span class="op">=</span> <span class="fl">11</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">p_rel</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">df_bias</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">age</span>, y <span class="op">=</span> <span class="va">rel_bias</span>,</span>
+<span>                              fill <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">rel_bias</span> <span class="op">&gt;</span> <span class="fl">0</span>, <span class="st">"pos"</span>, <span class="st">"neg"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_bar.html" class="external-link">geom_col</a></span><span class="op">(</span>width <span class="op">=</span> <span class="fl">0.7</span>, colour <span class="op">=</span> <span class="st">"grey40"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_hline</a></span><span class="op">(</span>yintercept <span class="op">=</span> <span class="fl">0</span>, linewidth <span class="op">=</span> <span class="fl">0.4</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html" class="external-link">scale_fill_manual</a></span><span class="op">(</span>values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>pos <span class="op">=</span> <span class="st">"#d6604d"</span>, neg <span class="op">=</span> <span class="st">"#4393c3"</span><span class="op">)</span>,</span>
+<span>                    guide <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_x_continuous</a></span><span class="op">(</span>breaks <span class="op">=</span> <span class="va">ages</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Age"</span>, y <span class="op">=</span> <span class="st">"Relative bias (%)"</span>,</span>
+<span>       title <span class="op">=</span> <span class="st">"Relative weight bias"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span>base_size <span class="op">=</span> <span class="fl">11</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">p_abs</span> <span class="op">+</span> <span class="va">p_rel</span></span></code></pre></div>
+<div class="figure">
+<img src="01-age-error-framework_files/figure-html/fig-bias-1.png" class="r-plt" alt="Absolute bias (left) and relative bias as a percentage (right) introduced by age-reading error and systematic underestimation of age (μ_ae = −1 yr). Bias peaks at intermediate ages where growth increments Δ_a are largest. At the oldest age the mixture effect reverses sign because there are no older fish to draw from — the truncation of the AREM at age 11 pulls old-age weights slightly downward." width="864"><p class="caption">
+Absolute bias (left) and relative bias as a percentage (right)
+introduced by age-reading error and systematic underestimation of age
+(μ_ae = −1 yr). Bias peaks at intermediate ages where growth increments
+Δ_a are largest. At the oldest age the mixture effect reverses sign
+because there are no older fish to draw from — the truncation of the
+AREM at age 11 pulls old-age weights slightly downward.
+</p>
+</div>
+</div>
+<div class="section level3">
+<h3 id="figure-5-year-by-year-weight-trajectories-at-selected-ages">Figure 5 — Year-by-Year Weight Trajectories at Selected Ages<a class="anchor" aria-label="anchor" href="#figure-5-year-by-year-weight-trajectories-at-selected-ages"></a>
+</h3>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">sel_ages</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">5</span>, <span class="fl">8</span>, <span class="fl">11</span><span class="op">)</span></span>
+<span><span class="va">idx</span>      <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/match.html" class="external-link">match</a></span><span class="op">(</span><span class="va">sel_ages</span>, <span class="va">ages</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">df_traj</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/do.call.html" class="external-link">do.call</a></span><span class="op">(</span><span class="va">rbind</span>, <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_along</a></span><span class="op">(</span><span class="va">sel_ages</span><span class="op">)</span>, <span class="kw">function</span><span class="op">(</span><span class="va">k</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">a</span>  <span class="op">&lt;-</span> <span class="va">sel_ages</span><span class="op">[</span><span class="va">k</span><span class="op">]</span></span>
+<span>  <span class="va">ia</span> <span class="op">&lt;-</span> <span class="va">idx</span><span class="op">[</span><span class="va">k</span><span class="op">]</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
+<span>    year    <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="va">years</span>, <span class="fl">3</span><span class="op">)</span>,</span>
+<span>    weight  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">wt_true</span><span class="op">[</span>, <span class="va">ia</span><span class="op">]</span>, <span class="va">wt_obs_c1</span><span class="op">[</span>, <span class="va">ia</span><span class="op">]</span>, <span class="va">wt_obs_c2</span><span class="op">[</span>, <span class="va">ia</span><span class="op">]</span><span class="op">)</span>,</span>
+<span>    label   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"True"</span>, <span class="st">"Case 1 (no error)"</span>, <span class="st">"Case 2 (error + bias)"</span><span class="op">)</span>,</span>
+<span>                  each <span class="op">=</span> <span class="va">nyrs</span><span class="op">)</span>,</span>
+<span>    age_lab <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"Age "</span>, <span class="va">a</span><span class="op">)</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="op">}</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">df_traj</span><span class="op">$</span><span class="va">label</span>   <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">df_traj</span><span class="op">$</span><span class="va">label</span>,</span>
+<span>                            levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"True"</span>,</span>
+<span>                                       <span class="st">"Case 1 (no error)"</span>,</span>
+<span>                                       <span class="st">"Case 2 (error + bias)"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">df_traj</span><span class="op">$</span><span class="va">age_lab</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">df_traj</span><span class="op">$</span><span class="va">age_lab</span>,</span>
+<span>                           levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"Age "</span>, <span class="va">sel_ages</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">cols3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"True"</span>                   <span class="op">=</span> <span class="st">"black"</span>,</span>
+<span>           <span class="st">"Case 1 (no error)"</span>      <span class="op">=</span> <span class="st">"#2166ac"</span>,</span>
+<span>           <span class="st">"Case 2 (error + bias)"</span>  <span class="op">=</span> <span class="st">"#d6604d"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">df_traj</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">year</span>, y <span class="op">=</span> <span class="va">weight</span>,</span>
+<span>                     colour <span class="op">=</span> <span class="va">label</span>, group <span class="op">=</span> <span class="va">label</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span>linewidth <span class="op">=</span> <span class="fl">0.7</span>, alpha <span class="op">=</span> <span class="fl">0.85</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html" class="external-link">facet_wrap</a></span><span class="op">(</span><span class="op">~</span><span class="va">age_lab</span>, scales <span class="op">=</span> <span class="st">"free_y"</span>, nrow <span class="op">=</span> <span class="fl">2</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html" class="external-link">scale_colour_manual</a></span><span class="op">(</span>values <span class="op">=</span> <span class="va">cols3</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Year"</span>, y <span class="op">=</span> <span class="st">"Weight (kg)"</span>, colour <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span>base_size <span class="op">=</span> <span class="fl">11</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"bottom"</span>,</span>
+<span>        strip.background <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_rect</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="st">"grey92"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<div class="figure">
+<img src="01-age-error-framework_files/figure-html/fig-trajectories-1.png" class="r-plt" alt="Annual weight trajectories at four representative ages (3, 5, 8, 11) for the true process (black), Case 1 observations (blue), and Case 2 contaminated observations (red). Case 1 tracks truth within observation noise. Case 2 is persistently biased — the magnitude of the shift matches the static bias shown in Figure 4, demonstrating that age-reading error induces a systematic, year-invariant offset rather than additional random noise." width="960"><p class="caption">
+Annual weight trajectories at four representative ages (3, 5, 8, 11) for
+the true process (black), Case 1 observations (blue), and Case 2
 contaminated observations (red). Case 1 tracks truth within observation
 noise. Case 2 is persistently biased — the magnitude of the shift
 matches the static bias shown in Figure 4, demonstrating that
 age-reading error induces a systematic, year-invariant offset rather
-than additional random noise.”</p>
-<p>sel_ages &lt;- c(3, 5, 8, 11) idx &lt;- match(sel_ages, ages)</p>
-<p>df_traj &lt;- do.call(rbind, lapply(seq_along(sel_ages), function(k)
-{ a &lt;- sel_ages[k] ia &lt;- idx[k] data.frame( year = rep(years, 3),
-weight = c(wt_true[, ia], wt_obs_c1[, ia], wt_obs_c2[, ia]), label =
-rep(c(“True”, “Case 1 (no error)”, “Case 2 (error + bias)”), each =
-nyrs), age_lab = paste0(“Age”, a) ) }))
-df_traj<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>l</mi><mi>a</mi><mi>b</mi><mi>e</mi><mi>l</mi><mo>&lt;</mo><mi>−</mi><mi>f</mi><mi>a</mi><mi>c</mi><mi>t</mi><mi>o</mi><mi>r</mi><mo stretchy="false" form="prefix">(</mo><mi>d</mi><msub><mi>f</mi><mi>t</mi></msub><mi>r</mi><mi>a</mi><mi>j</mi></mrow><annotation encoding="application/x-tex">label   &lt;- factor(df_traj</annotation></semantics></math>label,
-levels = c(“True”, “Case 1 (no error)”, “Case 2 (error + bias)”))
-df_traj<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>a</mi><mi>g</mi><msub><mi>e</mi><mi>l</mi></msub><mi>a</mi><mi>b</mi><mo>&lt;</mo><mi>−</mi><mi>f</mi><mi>a</mi><mi>c</mi><mi>t</mi><mi>o</mi><mi>r</mi><mo stretchy="false" form="prefix">(</mo><mi>d</mi><msub><mi>f</mi><mi>t</mi></msub><mi>r</mi><mi>a</mi><mi>j</mi></mrow><annotation encoding="application/x-tex">age_lab &lt;- factor(df_traj</annotation></semantics></math>age_lab,
-levels = paste0(“Age”, sel_ages))</p>
-<p>cols3 &lt;- c(“True” = “black”, “Case 1 (no error)” = “#2166ac”,
-“Case 2 (error + bias)” = “#d6604d”)</p>
-<p>ggplot(df_traj, aes(x = year, y = weight, colour = label, group =
-label)) + geom_line(linewidth = 0.7, alpha = 0.85) +
-facet_wrap(~age_lab, scales = “free_y”, nrow = 2) +
-scale_colour_manual(values = cols3) + labs(x = “Year”, y = “Weight
-(kg)”, colour = NULL) + theme_bw(base_size = 11) + theme(legend.position
-= “bottom”, strip.background = element_rect(fill = “grey92”))</p>
-<pre><code>
-### Parameter Recovery Summary
-
-```{r param-table}
-#| tbl-cap: "Recovered von Bertalanffy parameters from naïve fits to year-averaged observations. The Case 2 estimates deviate from the true values, demonstrating that ignoring age-reading error leads to biased growth parameter estimation."
-
-# Extract on natural scale
-extract_pars &lt;- function(par) {
-  c(L1    = exp(par[1]),
-    L2    = exp(par[2]),
-    K     = plogis(par[3]),
-    alpha = exp(par[4]))
-}
-
-tab &lt;- rbind(True    = c(L1 = L1, L2 = L2, K = K, alpha = alpha),
-             "Case 1" = extract_pars(fit_c1$par),
-             "Case 2" = extract_pars(fit_c2$par))
-
-knitr::kable(round(tab, 5),
-             col.names = c("L₁ (cm)", "L₂ (cm)", "K", "α"),
-             caption = NULL)</code></pre>
+than additional random noise.
+</p>
 </div>
-<div class="section level4">
-<h4 id="interpretation">Interpretation<a class="anchor" aria-label="anchor" href="#interpretation"></a>
-</h4>
+</div>
+<div class="section level3">
+<h3 id="parameter-recovery-summary">Parameter Recovery Summary<a class="anchor" aria-label="anchor" href="#parameter-recovery-summary"></a>
+</h3>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Extract on natural scale</span></span>
+<span><span class="va">extract_pars</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">par</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>L1    <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="va">par</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span>,</span>
+<span>    L2    <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="va">par</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span>,</span>
+<span>    K     <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Logistic.html" class="external-link">plogis</a></span><span class="op">(</span><span class="va">par</span><span class="op">[</span><span class="fl">3</span><span class="op">]</span><span class="op">)</span>,</span>
+<span>    alpha <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="va">par</span><span class="op">[</span><span class="fl">4</span><span class="op">]</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="va">tab</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span>True    <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>L1 <span class="op">=</span> <span class="va">L1</span>, L2 <span class="op">=</span> <span class="va">L2</span>, K <span class="op">=</span> <span class="va">K</span>, alpha <span class="op">=</span> <span class="va">alpha</span><span class="op">)</span>,</span>
+<span>             <span class="st">"Case 1"</span> <span class="op">=</span> <span class="fu">extract_pars</span><span class="op">(</span><span class="va">fit_c1</span><span class="op">$</span><span class="va">par</span><span class="op">)</span>,</span>
+<span>             <span class="st">"Case 2"</span> <span class="op">=</span> <span class="fu">extract_pars</span><span class="op">(</span><span class="va">fit_c2</span><span class="op">$</span><span class="va">par</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">tab</span>, <span class="fl">5</span><span class="op">)</span>,</span>
+<span>             col.names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"L₁ (cm)"</span>, <span class="st">"L₂ (cm)"</span>, <span class="st">"K"</span>, <span class="st">"α"</span><span class="op">)</span>,</span>
+<span>             caption <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
+<table class="table">
+<thead><tr class="header">
+<th align="left"></th>
+<th align="right">L₁ (cm)</th>
+<th align="right">L₂ (cm)</th>
+<th align="right">K</th>
+<th align="right">α</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">True</td>
+<td align="right">27.00000</td>
+<td align="right">46.00000</td>
+<td align="right">0.87810</td>
+<td align="right">2e-05</td>
+</tr>
+<tr class="even">
+<td align="left">Case 1</td>
+<td align="right">24.91770</td>
+<td align="right">44.88499</td>
+<td align="right">0.85522</td>
+<td align="right">2e-05</td>
+</tr>
+<tr class="odd">
+<td align="left">Case 2</td>
+<td align="right">26.57694</td>
+<td align="right">29.10060</td>
+<td align="right">0.00013</td>
+<td align="right">4e-05</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section level3">
+<h3 id="interpretation">Interpretation<a class="anchor" aria-label="anchor" href="#interpretation"></a>
+</h3>
 <p>The simulation makes three points concrete:</p>
 <p><strong>Age-confusion bias is largest at fast-growing ages.</strong>
 In Figure 4, the peak absolute bias occurs around ages 4–6 where growth
@@ -1009,9 +1110,10 @@ forecast weights (<code>wt_cur</code>, <code>wt_next</code>,
 inputs.</p>
 <hr>
 </div>
-<div class="section level3">
-<h3 id="next-steps">Next Steps<a class="anchor" aria-label="anchor" href="#next-steps"></a>
-</h3>
+</div>
+<div class="section level2">
+<h2 id="next-steps">Next Steps<a class="anchor" aria-label="anchor" href="#next-steps"></a>
+</h2>
 <p>This document establishes the theoretical framework. Concrete next
 steps for implementation include:</p>
 <ol style="list-style-type: decimal">
@@ -1033,7 +1135,6 @@ the delta method or MCMC to ensure that age-reading uncertainty is
 properly reflected in the standard errors reported by
 <code>sdreport</code>.</p></li>
 </ol>
-</div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

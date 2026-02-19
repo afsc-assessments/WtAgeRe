@@ -1,9 +1,10 @@
-pandoc: '3.9'
+pandoc: 3.8.3
 pkgdown: 2.2.0
 pkgdown_sha: ~
 articles:
   00-ebspollock-example: 00-ebspollock-example.html
-last_built: 2026-02-18T23:40Z
+  01-age-error-framework: 01-age-error-framework.html
+last_built: 2026-02-19T05:06Z
 urls:
   reference: https://afsc-assessments.github.io/WtAgeRe/reference
   article: https://afsc-assessments.github.io/WtAgeRe/articles
